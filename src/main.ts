@@ -8,4 +8,4 @@ import App from './App.vue'
 import router from './router'
 
 const app = createApp(App)
-app.use(ElementUI, { size: 'small' }).use(router).mount('#app')
+app.use(ElementUI, { size: 'default' }).use(router).mount('#app')

@@ -8,7 +8,9 @@
         @delete-task="handleDeleteTask"
       ></task-item>
     </ul>
-    <div v-else style="text-align: center">暂无任务</div>
+    <div v-else style="text-align: center">
+      <el-empty :image-size="200" description="暂无任务" />
+    </div>
   </div>
 </template>
 
