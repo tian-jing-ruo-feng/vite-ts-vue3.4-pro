@@ -14,6 +14,11 @@ export const routes: RouteRecordRaw[] = [
         name: 'Todo',
         path: 'todo',
         component: () => import('../views/todo/index.vue')
+      },
+      {
+        name: 'Draggable',
+        path: 'draggable',
+        component: () => import('../views/draggable/index.vue')
       }
     ]
   }
