@@ -22,13 +22,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { routes } from '../router/index'
-import { useRouter } from 'vue-router'
 const $router = useRouter()
 const curRoutes = routes[0].children || []
 const firstRoute = curRoutes[0]
 const active = ref(firstRoute.name)
+$router.push({ name: active.value })
 const handleSelect = (key: string, keyPath: string[]) => {
   active.value = key
   $router.push(active.value)

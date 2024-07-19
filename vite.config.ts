@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 // need @types/node npm package
 import path from 'path'
+import Icons from 'unplugin-icons/vite'
+import IconsResolver from 'unplugin-icons/resolver'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
@@ -10,19 +12,49 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 export default defineConfig({
   plugins: [
     vue(),
+
     AutoImport({
-      resolvers: [ElementPlusResolver()]
+      // Auto import [vue, vue-router, pinia] functions related
+      // example: functions from vue, ref, reactive, toRef
+      imports: ['vue', 'vue-router', 'pinia'],
+      include: [/\.[tj]sx?$/, /\.vue$/, /\.md$/],
+      resolvers: [
+        ElementPlusResolver(),
+        // Auto import icon components
+        IconsResolver({
+          prefix: 'Icon' // default prefix is 'i'
+        })
+      ],
+      dts: path.resolve(__dirname, 'auto-imports.d.ts')
     }),
+
     Components({
-      resolvers: [ElementPlusResolver()]
+      resolvers: [
+        ElementPlusResolver(),
+        // Auto register icon components
+        // 自动注册图标组件
+        IconsResolver({
+          prefix: false,
+          enabledCollections: ['ep']
+        })
+      ],
+
+      dts: path.resolve(__dirname, 'components.d.ts')
+    }),
+
+    Icons({
+      autoInstall: true
     })
   ],
+
   resolve: {
     alias: {
       '@': path.join(__dirname, 'src')
     },
+
     extensions: ['.mjs', '.js', '.ts', '.vue', '.jsx', '.tsx', '.json']
   },
+
   server: {
     host: '0.0.0.0',
     port: 5173,

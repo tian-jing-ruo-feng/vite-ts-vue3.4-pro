@@ -9,7 +9,12 @@
     }
   ],
   "compilerOptions": {
-    "types": ["element-plus/global"],
+    "types": [
+      "element-plus/global",
+      "unplugin-icons/types/vue",
+      "vite/client",
+      "./auto-imports.d.ts"
+    ],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]

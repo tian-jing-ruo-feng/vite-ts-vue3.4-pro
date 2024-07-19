@@ -5,13 +5,13 @@ import Home from '../layout/Home.vue'
 
 export const routes: RouteRecordRaw[] = [
   {
-    path: '/',
     name: 'Home',
+    path: '/',
     component: Home,
     children: [
       {
-        path: 'todo',
         name: 'Todo',
+        path: 'todo',
         component: () => import('../views/todo/index.vue')
       }
     ]
