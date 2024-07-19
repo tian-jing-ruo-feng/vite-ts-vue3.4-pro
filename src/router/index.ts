@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { type RouteRecordRaw } from 'vue-router'
+import { name } from '../../package.json'
 
 import Home from '../layout/Home.vue'
 
@@ -22,6 +23,10 @@ const history = createWebHistory()
 const router = createRouter({
   history,
   routes
+})
+
+router.beforeEach((to, from) => {
+  document.title = (to.name as string) + '-' + name
 })
 
 export default router
