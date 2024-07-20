@@ -13,7 +13,6 @@
       </el-button>
     </div>
     <!-- operation button intro -->
-
     <el-scrollbar :height="height">
       <Tasks :tasks="tasks" @remove="removeTask"></Tasks>
     </el-scrollbar>
@@ -66,6 +65,8 @@ onMounted(() => {
 .todo {
   display: flex;
   flex-direction: column;
+  width: 50%;
+  margin: 0 auto;
   .title {
     font-weight: bold;
     text-align: center;
