@@ -64,6 +64,19 @@
       <el-icon class="done">
         <ep-success-filled color="green"></ep-success-filled>
       </el-icon>
+      <el-tooltip :visible="copied" effect="light" placement="top">
+        <template #content>
+          <span>Copied</span>
+        </template>
+        <el-button
+          ref="buttonRef"
+          @click="copy(task.name)"
+          size="small"
+          class="copy-text"
+        > 
+          <el-icon><ep-copy-document/></el-icon>
+        </el-button>
+      </el-tooltip>
       <!-- archive 归档到某个分类（文件夹） -->
       <el-button size="small" plain>
         <el-icon>
@@ -83,6 +96,7 @@
 import dayjs from 'dayjs'
 import { Finished, Timer } from '@element-plus/icons-vue'
 import { DATE_FORMAT, TASKS_DONE, TASKS_TODO } from '../../consts'
+import { useClipboard } from '@vueuse/core'
 
 export type TaskState = 'done' | 'todo' | 'archive'
 export interface Task {
@@ -117,8 +131,11 @@ const emit = defineEmits<{
   changeTaskState: [updateTask: TaskUpdated]
 }>()
 
+const { copy, copied } = useClipboard()
 const taskWrap = ref<HTMLElement>()
 const taskName = ref<HTMLElement>()
+const buttonRef = ref()
+const popoverRef = ref()
 const visible = ref(false)
 const visibleComputed = ref(false)
 const taskState = ref<TaskState>(TASKS_TODO)
@@ -187,7 +204,7 @@ onMounted(() => {
   }
 
   .task-name {
-    width: 80%;
+    width: calc(100% - 200px);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -208,8 +225,16 @@ onMounted(() => {
   }
 
   .operation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 200px;
     vertical-align: middle;
 
+    .el-button {
+      margin-left: 0;
+    }
     .done {
       vertical-align: middle;
       margin-right: 10px;
