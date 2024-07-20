@@ -9,6 +9,7 @@
   >
     <el-tooltip
       :visible="tooltipVisible"
+      :show-arrow="false"
       trigger="hover"
       placement="top"
       effect="customized"
@@ -26,10 +27,36 @@
         @mouseleave="handleMouseLeave"
       >
         <span ref="taskName">
-          {{ task.name }}
+          <span class="task-state">
+            <el-switch
+              v-model="taskState"
+              inline-prompt
+              active-text="Done"
+              inactive-text="Todo"
+              style="
+                --el-switch-on-color: #13ce66;
+                --el-switch-off-color: #e6a23c;
+              "
+              :active-value="TASKS_DONE"
+              :inactive-value="TASKS_TODO"
+              :active-action-icon="Finished"
+              :inactive-action-icon="Timer"
+              @change="
+                $emit('changeTaskState', {
+                  state: taskState,
+                  id: task.id,
+                  updateTime: dayjs().format(DATE_FORMAT)
+                })
+              "
+            />
+          </span>
+          <span class="task-name-content">{{ task.name }}</span>
         </span>
         <p class="extro-info">
-          <span class="create-time">{{ task.createTime }}</span>
+          <span class="create-time">创建于：{{ task.createTime }}</span>
+          <span class="update-time" v-if="task.updateTime">
+            更新于：{{ task.updateTime }}</span
+          >
         </p>
       </div>
     </el-tooltip>
@@ -53,13 +80,24 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs'
+import { Finished, Timer } from '@element-plus/icons-vue'
+import { DATE_FORMAT, TASKS_DONE, TASKS_TODO } from '../../consts'
+
+export type TaskState = 'done' | 'todo' | 'archive'
 export interface Task {
   name: string
   id: string
-  state?: 'done' | 'todo' | 'archive'
+  state?: TaskState
   createTime?: string
   updateTime?: string
 }
+export interface TaskUpdated {
+  state: TaskState
+  id: string
+  updateTime: string
+}
+
 type Props = {
   task: Task
 }
@@ -72,12 +110,18 @@ const props = withDefaults(defineProps<Props>(), {
     createTime: Date.now().toLocaleString()
   })
 })
-defineEmits(['deleteTask'])
+
+// vue3.3+ 具名元组法
+const emit = defineEmits<{
+  deleteTask: [id: string]
+  changeTaskState: [updateTask: TaskUpdated]
+}>()
 
 const taskWrap = ref<HTMLElement>()
 const taskName = ref<HTMLElement>()
 const visible = ref(false)
 const visibleComputed = ref(false)
+const taskState = ref<TaskState>(TASKS_TODO)
 
 const isTodo = computed(() => props.task?.state === 'todo')
 const isDone = computed(() => props.task?.state === 'done')
@@ -99,6 +143,9 @@ const handleMouseLeave = () => {
   }
 }
 
+onBeforeMount(() => {
+  taskState.value = props.task.state as TaskState
+})
 onMounted(() => {
   const wrapWidth = taskWrap.value?.offsetWidth as number
   const taskWidth = taskName.value?.offsetWidth as number
@@ -133,7 +180,6 @@ onMounted(() => {
 
   &:first-of-type {
     margin-top: 0;
-    border-top: 2px solid green;
   }
   &:hover {
     background: linear-gradient(90deg, #008000, #ffffff);
@@ -145,6 +191,14 @@ onMounted(() => {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    .task-state,
+    .task-name-content {
+      vertical-align: middle;
+    }
+    .task-state {
+      margin-right: 10px;
+    }
 
     .extro-info {
       margin-top: 10px;
@@ -163,12 +217,12 @@ onMounted(() => {
   }
 }
 .task-todo {
-  background-color: $state-todo;
+  border-left: 4px solid $state-todo;
 }
 .task-done {
-  background-color: $state-done;
+  border-left: 4px solid $state-done;
 }
 .task-archive {
-  background-color: $state-archive;
+  border-left: 4px solid $state-archive;
 }
 </style>

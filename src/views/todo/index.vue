@@ -26,7 +26,7 @@
     </div>
     <!-- operation button intro -->
     <el-scrollbar always :height="height">
-      <Tasks :tasks="tasks" @remove="removeTask"></Tasks>
+      <Tasks :tasks="tasks" @remove="removeTask" @update="updateTask"></Tasks>
     </el-scrollbar>
   </div>
 </template>
@@ -36,8 +36,8 @@ import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
 import { FormInstance, FormRules } from 'element-plus'
 import Tasks, { type TasksArr } from './tasks.vue'
-import { type Task } from './taskItem.vue'
-import { DATE_FORMAT, TASKS } from '../../consts'
+import { type Task, type TaskUpdated } from './taskItem.vue'
+import { DATE_FORMAT, TASKS, TASKS_DONE, TASKS_TODO } from '../../consts'
 import useTodo from '../../hooks/useTodo'
 interface Form {
   task: string
@@ -72,6 +72,8 @@ const rules = reactive<FormRules<typeof form>>({
   }
 })
 
+const findTaskIndexById = (id: string) =>
+  tasks.value.findIndex((task: Task) => task.id === id)
 const addTask = () => {
   formRef.value?.validate((isValid) => {
     if (isValid) {
@@ -88,15 +90,22 @@ const addTask = () => {
   })
 }
 const removeTask = (id: string) => {
-  const taskIndex = tasks.value.findIndex((task: Task) => task.id === id)
+  const taskIndex = findTaskIndexById(id)
   tasks.value.splice(taskIndex, 1)
   // save tasks in localStorage
+  setItem(tasks.value)
   localStorage.setItem(TASKS, JSON.stringify(tasks.value))
+}
+const updateTask = (taskUpdated: TaskUpdated) => {
+  const { id, state, updateTime } = taskUpdated
+  const taskIndex = findTaskIndexById(id)
+  const task = tasks.value[taskIndex]
+  tasks.value[taskIndex] = { ...task, state, updateTime }
+  // save tasks in localStorage
+  setItem(tasks.value)
 }
 
 onMounted(() => {
-  // const existTasks = localStorage.getItem('tasks')
-  // existTasks && (tasks.value = JSON.parse(existTasks as string))
   tasks.value = getItem()
   inputTask.value?.focus()
 })

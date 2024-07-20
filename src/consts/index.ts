@@ -1,2 +1,5 @@
 export const TASKS = 'tasks'
+export const TASKS_TODO = 'todo'
+export const TASKS_DONE = 'done'
+export const TASKS_ARCHIVE = 'archive'
 export const DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss'

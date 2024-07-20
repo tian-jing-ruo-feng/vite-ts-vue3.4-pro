@@ -6,6 +6,7 @@
         :key="task.id"
         :task="task"
         @delete-task="handleDeleteTask"
+        @change-task-state="handleChangeTaskState"
       ></task-item>
     </ul>
     <div v-else style="text-align: center">
@@ -15,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import taskItem, { type Task } from './taskItem.vue'
+import taskItem, { type Task, type TaskUpdated } from './taskItem.vue'
 export type TasksArr = Task[]
 interface Props {
   tasks: TasksArr
@@ -27,10 +28,14 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   remove: [id: string]
+  update: [updateTask: TaskUpdated]
 }>()
 
 const handleDeleteTask = (taskId: string) => {
   emit('remove', taskId)
+}
+const handleChangeTaskState = (updateTask: TaskUpdated) => {
+  emit('update', updateTask)
 }
 </script>
 
