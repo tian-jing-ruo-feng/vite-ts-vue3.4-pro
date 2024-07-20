@@ -32,16 +32,18 @@
 </template>
 
 <script setup lang="ts">
+import { v4 as uuidv4 } from 'uuid'
+import dayjs from 'dayjs'
 import { FormInstance, FormRules } from 'element-plus'
 import Tasks, { type TasksArr } from './tasks.vue'
 import { type Task } from './taskItem.vue'
-import { TASKS } from '../../consts'
+import { DATE_FORMAT, TASKS } from '../../consts'
 import useTodo from '../../hooks/useTodo'
 interface Form {
   task: string
 }
 
-let id = 0
+// let id = 0
 
 const { getItem, setItem } = useTodo()
 
@@ -75,7 +77,9 @@ const addTask = () => {
     if (isValid) {
       tasks.value.unshift({
         name: form.task,
-        id: id++
+        id: uuidv4(),
+        state: 'todo',
+        createTime: dayjs().format(DATE_FORMAT)
       })
       form.task = ''
       // save tasks in localStorage
@@ -83,7 +87,7 @@ const addTask = () => {
     }
   })
 }
-const removeTask = (id: number) => {
+const removeTask = (id: string) => {
   const taskIndex = tasks.value.findIndex((task: Task) => task.id === id)
   tasks.value.splice(taskIndex, 1)
   // save tasks in localStorage

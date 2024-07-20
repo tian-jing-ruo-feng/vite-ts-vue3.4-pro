@@ -22,14 +22,14 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  tasks: () => [{ name: '任务', id: 0 }]
+  tasks: () => [{ name: '任务', id: 'aaaa' }]
 })
 
 const emit = defineEmits<{
-  remove: [id: number]
+  remove: [id: string]
 }>()
 
-const handleDeleteTask = (taskId: number) => {
+const handleDeleteTask = (taskId: string) => {
   emit('remove', taskId)
 }
 </script>

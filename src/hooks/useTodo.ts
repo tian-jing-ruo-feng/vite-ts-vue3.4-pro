@@ -1,9 +1,6 @@
 import { TASKS } from '../consts'
+import { type Task } from '../views/todo/taskItem.vue'
 
-interface Task {
-  name: string
-  id: number
-}
 type Tasks = Task[] | null
 
 const useTodo = () => {

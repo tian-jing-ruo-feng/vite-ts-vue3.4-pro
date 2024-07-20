@@ -19,7 +19,7 @@
         </p>
       </template>
 
-      <p
+      <div
         class="task-name"
         ref="taskWrap"
         @mouseenter="handleMouseEnter"
@@ -28,7 +28,10 @@
         <span ref="taskName">
           {{ task.name }}
         </span>
-      </p>
+        <p class="extro-info">
+          <span class="create-time">{{ task.createTime }}</span>
+        </p>
+      </div>
     </el-tooltip>
     <div class="operation">
       <el-icon class="done">
@@ -52,7 +55,7 @@
 <script setup lang="ts">
 export interface Task {
   name: string
-  id: number
+  id: string
   state?: 'done' | 'todo' | 'archive'
   createTime?: string
   updateTime?: string
@@ -64,7 +67,9 @@ type Props = {
 const props = withDefaults(defineProps<Props>(), {
   task: () => ({
     name: '任务',
-    id: 0
+    id: '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d',
+    state: 'todo',
+    createTime: Date.now().toLocaleString()
   })
 })
 defineEmits(['deleteTask'])
@@ -140,6 +145,12 @@ onMounted(() => {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    .extro-info {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #a8abb2;
+    }
   }
 
   .operation {
