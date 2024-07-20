@@ -13,9 +13,9 @@
       </el-button>
     </div>
     <!-- operation button intro -->
-     
+
     <el-scrollbar :height="height">
-    <Tasks :tasks="tasks" @remove="removeTask"></Tasks>
+      <Tasks :tasks="tasks" @remove="removeTask"></Tasks>
     </el-scrollbar>
   </div>
 </template>
@@ -23,8 +23,12 @@
 <script setup lang="ts">
 import { ElMessage } from 'element-plus'
 import Tasks, { type TasksArr } from './tasks.vue'
+import { type Task } from './taskItem.vue'
+import { TASKS } from '../../consts'
+import useTodo from '../../hooks/useTodo'
 let id = 0
 
+const { getItem, setItem } = useTodo()
 const task = ref('')
 const tasks = ref<TasksArr>([])
 const inputTask = ref<HTMLInputElement>()
@@ -38,21 +42,22 @@ const addTask = () => {
     })
     task.value = ''
     // save tasks in localStorage
-    localStorage.setItem('tasks', JSON.stringify(tasks.value))
+    setItem(tasks.value)
   } else {
     ElMessage.warning('请输入内容！')
   }
 }
 const removeTask = (id: number) => {
-  const taskIndex = tasks.value.findIndex((task) => task.id === id)
+  const taskIndex = tasks.value.findIndex((task: Task) => task.id === id)
   tasks.value.splice(taskIndex, 1)
   // save tasks in localStorage
-  localStorage.setItem('tasks', JSON.stringify(tasks.value))
+  localStorage.setItem(TASKS, JSON.stringify(tasks.value))
 }
 
 onMounted(() => {
-  const existTasks = localStorage.getItem('tasks')
-  tasks.value = JSON.parse(existTasks as string)
+  // const existTasks = localStorage.getItem('tasks')
+  // existTasks && (tasks.value = JSON.parse(existTasks as string))
+  tasks.value = getItem()
   inputTask.value?.focus()
 })
 </script>

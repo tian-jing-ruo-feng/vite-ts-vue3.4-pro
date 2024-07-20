@@ -1,6 +1,6 @@
 <template>
   <div class="tasks">
-    <ul v-if="tasks.length">
+    <ul v-if="tasks?.length">
       <task-item
         v-for="task in tasks"
         :key="task.id"
