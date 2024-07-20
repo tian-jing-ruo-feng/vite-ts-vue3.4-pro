@@ -35,7 +35,7 @@ export default defineConfig({
         // 自动注册图标组件
         IconsResolver({
           prefix: false,
-          enabledCollections: ['ep']
+          enabledCollections: ['ep', 'fa']
         })
       ],
 
@@ -53,6 +53,14 @@ export default defineConfig({
     },
 
     extensions: ['.mjs', '.js', '.ts', '.vue', '.jsx', '.tsx', '.json']
+  },
+
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "./src/style/variables.scss";`
+      }
+    }
   },
 
   server: {

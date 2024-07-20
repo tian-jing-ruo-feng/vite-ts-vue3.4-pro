@@ -25,7 +25,7 @@
       </el-form>
     </div>
     <!-- operation button intro -->
-    <el-scrollbar :height="height">
+    <el-scrollbar always :height="height">
       <Tasks :tasks="tasks" @remove="removeTask"></Tasks>
     </el-scrollbar>
   </div>
@@ -47,7 +47,7 @@ const { getItem, setItem } = useTodo()
 
 const tasks = ref<TasksArr>([])
 const inputTask = ref<HTMLInputElement>()
-const height = ref(400)
+const height = ref('60vh')
 const formRef = ref<FormInstance>()
 const form: Form = reactive({
   task: ''

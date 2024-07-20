@@ -1,5 +1,12 @@
 <template>
-  <li class="task-item">
+  <li
+    class="task-item"
+    :class="{
+      'task-todo': isTodo,
+      'task-done': isDone,
+      'task-archive': isArchive
+    }"
+  >
     <el-tooltip
       :visible="tooltipVisible"
       trigger="hover"
@@ -30,7 +37,7 @@
       <!-- archive 归档到某个分类（文件夹） -->
       <el-button size="small" plain>
         <el-icon>
-          <ep-collection color="#409EFF"></ep-collection>
+          <fa-telegram color="#41b883"></fa-telegram>
         </el-icon>
       </el-button>
       <el-button size="small" tes @click="$emit('deleteTask', task.id)">
@@ -46,6 +53,9 @@
 export interface Task {
   name: string
   id: number
+  state?: 'done' | 'todo' | 'archive'
+  createTime?: string
+  updateTime?: string
 }
 type Props = {
   task: Task
@@ -63,7 +73,12 @@ const taskWrap = ref<HTMLElement>()
 const taskName = ref<HTMLElement>()
 const visible = ref(false)
 const visibleComputed = ref(false)
+
+const isTodo = computed(() => props.task?.state === 'todo')
+const isDone = computed(() => props.task?.state === 'done')
+const isArchive = computed(() => props.task?.state === 'archive')
 const tooltipVisible = computed(() => visibleComputed.value && visible.value)
+
 const handleMouseEnter = () => {
   if (visible.value) {
     visibleComputed.value = true
@@ -135,5 +150,14 @@ onMounted(() => {
       margin-right: 10px;
     }
   }
+}
+.task-todo {
+  background-color: $state-todo;
+}
+.task-done {
+  background-color: $state-done;
+}
+.task-archive {
+  background-color: $state-archive;
 }
 </style>
