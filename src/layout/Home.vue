@@ -52,11 +52,7 @@ const { vue: VueVersion } = dependencies
     .main-content-card {
       flex: 1;
       .content {
-        // In Practice, means that the box will use the available space,
-        // but never more than max-content
-        width: fit-content;
-        padding-top: 20px;
-        margin: 0 auto;
+        padding: 20px;
       }
     }
   }
