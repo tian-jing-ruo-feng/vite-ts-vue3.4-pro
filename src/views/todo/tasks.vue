@@ -9,6 +9,12 @@
         :title="TaskStates[state as TaskState]"
         :name="state"
       >
+        <template #title>
+          {{ TaskStates[state as TaskState] }}
+          <span class="task-statistics">
+            共（{{ getTasksByState(state as TaskState).length }}）项任务
+          </span>
+        </template>
         <div v-if="getTasksByState(state as TaskState)">
           <task-item
             v-for="task in getTasksByState(state as TaskState)"
@@ -89,6 +95,13 @@ const handleChangeTaskState = (updateTask: TaskUpdated) => {
       padding: 0 1%;
       font-size: 14px;
       font-weight: bold;
+
+      .task-statistics {
+        margin: -10px 0 0 10px;
+        font-size: 12px;
+        font-weight: normal;
+        color: var(--el-color-info);
+      }
     }
 
     &.task-collapse-todo .el-collapse-item__header {
