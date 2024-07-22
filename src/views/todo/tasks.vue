@@ -12,12 +12,12 @@
         <template #title>
           {{ TaskStates[state as TaskState] }}
           <span class="task-statistics">
-            共（{{ getTasksByState(state as TaskState).length }}）项任务
+            共（{{ getTasksNotDeleted(state as TaskState).length }}）项任务
           </span>
         </template>
         <div v-if="getTasksByState(state as TaskState)">
           <task-item
-            v-for="task in getTasksByState(state as TaskState).filter(itask => !itask.isRemoved)"
+            v-for="task in getTasksNotDeleted(state as TaskState)"
             :key="task.id"
             :task="task"
             @delete-task="handleDeleteTask"
@@ -73,6 +73,10 @@ const activeNames = ref(TASKS_TODO)
 
 const getTasksByState = (state: TaskState) => {
   return props.tasks.filter((task) => task.state === state)
+}
+
+const getTasksNotDeleted = (state: TaskState) => {
+  return getTasksByState(state).filter((task) => !task.isRemoved)
 }
 
 const handleDeleteTask = (taskId: string) => {
