@@ -86,7 +86,11 @@
           <fa-telegram color="#41b883"></fa-telegram>
         </el-icon>
       </el-button>
-      <el-button size="small" tes @click="$emit('deleteTask', task.id)">
+      <el-button
+        size="small"
+        :disabled="() => canRemove(task)"
+        @click="$emit('deleteTask', task.id)"
+      >
         <el-icon>
           <ep-delete color="red"></ep-delete>
         </el-icon>
@@ -152,6 +156,8 @@ const isTodo = computed(() => props.task?.state === 'todo')
 const isDone = computed(() => props.task?.state === 'done')
 const isArchive = computed(() => props.task?.state === 'archive')
 const tooltipVisible = computed(() => visibleComputed.value && visible.value)
+
+const canRemove = (task: Task) => task.isRemoved || false
 
 const handleMouseEnter = () => {
   if (visible.value) {
