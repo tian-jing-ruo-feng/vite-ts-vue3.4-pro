@@ -73,8 +73,8 @@
           @click="copy(task.name)"
           size="small"
           class="copy-text"
-        > 
-          <el-icon><ep-copy-document/></el-icon>
+        >
+          <el-icon><ep-copy-document /></el-icon>
         </el-button>
       </el-tooltip>
       <!-- archive 归档到某个分类（文件夹） -->
@@ -198,10 +198,10 @@ onMounted(() => {
   &:first-of-type {
     margin-top: 0;
   }
-  &:hover {
-    background: linear-gradient(90deg, #008000, #ffffff);
-    color: #fff;
-  }
+  // &:hover {
+  //   background: linear-gradient(90deg, #008000, #ffffff);
+  //   color: #fff;
+  // }
 
   .task-name {
     width: calc(100% - 200px);
