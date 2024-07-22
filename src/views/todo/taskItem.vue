@@ -57,6 +57,9 @@
           <span class="update-time" v-if="task.updateTime">
             更新于：{{ task.updateTime }}</span
           >
+          <span class="consumed-time" v-if="task.updateTime">
+            耗时：{{ dayjs(task.createTime).to(task.updateTime) }}</span
+          >
         </p>
       </div>
     </el-tooltip>
@@ -93,7 +96,11 @@
 </template>
 
 <script setup lang="ts">
+import relativeTime from 'dayjs/plugin/relativeTime'
+import 'dayjs/locale/zh-cn'
 import dayjs from 'dayjs'
+dayjs.locale('zh-cn')
+dayjs.extend(relativeTime)
 import { Finished, Timer } from '@element-plus/icons-vue'
 import { DATE_FORMAT, TASKS_DONE, TASKS_TODO } from '../../consts'
 import { useClipboard } from '@vueuse/core'
@@ -221,6 +228,16 @@ onMounted(() => {
       margin-top: 10px;
       font-size: 12px;
       color: #a8abb2;
+
+      .create-time,
+      .update-time,
+      .consumed-time {
+        padding-right: 10px;
+
+        &:last-of-type {
+          padding-right: 0;
+        }
+      }
     }
   }
 
