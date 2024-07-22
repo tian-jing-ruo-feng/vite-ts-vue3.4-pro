@@ -1,12 +1,14 @@
 <template>
   <div class="tasks">
-    <ul v-if="tasks?.length">
-      <li
-        class="task-group"
+    <el-collapse v-if="tasks?.length" v-model="activeNames">
+      <el-collapse-item
+        class="task-collapse-item"
         v-for="state in Object.keys(TaskStates)"
         :key="state"
+        :class="[`task-collapse-${state}`]"
+        :title="TaskStates[state as TaskState]"
+        :name="state"
       >
-        <el-divider content-position="left">{{ TaskStates[state as TaskState] }}</el-divider>
         <div v-if="getTasksByState(state as TaskState)">
           <task-item
             v-for="task in getTasksByState(state as TaskState)"
@@ -17,10 +19,15 @@
           ></task-item>
         </div>
         <div v-else>
-          <el-empty :image-size="50" description=" " style="height:50px; padding: 0;" />
+          <el-empty
+            :image-size="50"
+            description=" "
+            style="height: 50px; padding: 0"
+          />
         </div>
-      </li>
-    </ul>
+      </el-collapse-item>
+    </el-collapse>
+
     <div v-else style="text-align: center">
       <el-empty :image-size="200" description="暂无任务" />
     </div>
@@ -28,8 +35,12 @@
 </template>
 
 <script setup lang="ts">
-import { TASKS_ARCHIVE, TASKS_DONE, TASKS_TODO } from '../../consts';
-import taskItem, { type Task, type TaskUpdated, type TaskState } from './taskItem.vue'
+import { TASKS_ARCHIVE, TASKS_DONE, TASKS_TODO } from '../../consts'
+import taskItem, {
+  type Task,
+  type TaskUpdated,
+  type TaskState
+} from './taskItem.vue'
 export type TasksArr = Task[]
 interface Props {
   tasks: TasksArr
@@ -52,9 +63,10 @@ const TaskStates: ST = {
   [TASKS_DONE]: '完成任务',
   [TASKS_ARCHIVE]: '归档任务'
 }
+const activeNames = ref(TASKS_TODO)
 
 const getTasksByState = (state: TaskState) => {
-  return props.tasks.filter(task => task.state === state)
+  return props.tasks.filter((task) => task.state === state)
 }
 
 const handleDeleteTask = (taskId: string) => {
@@ -71,5 +83,23 @@ const handleChangeTaskState = (updateTask: TaskUpdated) => {
   flex-direction: column;
   justify-content: flex-start;
   margin-top: 20px;
+
+  &:deep(.task-collapse-item) {
+    .el-collapse-item__header {
+      padding: 0 1%;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    &.task-collapse-todo .el-collapse-item__header {
+      background: rgba($color: $state-todo, $alpha: 0.2);
+    }
+    &.task-collapse-done .el-collapse-item__header {
+      background: rgba($color: $state-done, $alpha: 0.2);
+    }
+    &.task-collapse-archive .el-collapse-item__header {
+      background: rgba($color: $state-archive, $alpha: 0.2);
+    }
+  }
 }
 </style>
