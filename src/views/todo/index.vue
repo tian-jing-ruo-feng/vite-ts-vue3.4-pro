@@ -24,6 +24,7 @@
         </el-form-item>
       </el-form>
     </div>
+    <task-group></task-group>
     <!-- operation button intro -->
     <el-scrollbar :height="height">
       <Tasks :tasks="tasks" @remove="removeTask" @update="updateTask"></Tasks>
@@ -37,6 +38,7 @@ import dayjs from 'dayjs'
 import { FormInstance, FormRules } from 'element-plus'
 import Tasks, { type TasksArr } from './tasks.vue'
 import { type Task, type TaskUpdated } from './taskItem.vue'
+import TaskGroup from '@/components/TaskGroup.vue'
 import { DATE_FORMAT, TASKS, TASKS_DONE, TASKS_TODO } from '../../consts'
 import useTodo from '../../hooks/useTodo'
 interface Form {

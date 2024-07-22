@@ -10,6 +10,7 @@ declare module 'vue' {
     Draggable: typeof import('./src/components/Draggable.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
+    ElCheckTag: typeof import('element-plus/es')['ElCheckTag']
     ElCollapse: typeof import('element-plus/es')['ElCollapse']
     ElCollapseItem: typeof import('element-plus/es')['ElCollapseItem']
     ElContainer: typeof import('element-plus/es')['ElContainer']
@@ -25,6 +26,7 @@ declare module 'vue' {
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
     ElScrollbar: typeof import('element-plus/es')['ElScrollbar']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
+    ElTag: typeof import('element-plus/es')['ElTag']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     EpCopyDocument: typeof import('~icons/ep/copy-document')['default']
     EpDelete: typeof import('~icons/ep/delete')['default']
@@ -35,5 +37,6 @@ declare module 'vue' {
     RawData: typeof import('./src/components/RawData.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TaskGroup: typeof import('./src/components/TaskGroup.vue')['default']
   }
 }
