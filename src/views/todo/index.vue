@@ -25,7 +25,7 @@
       </el-form>
     </div>
     <!-- operation button intro -->
-    <el-scrollbar always :height="height">
+    <el-scrollbar :height="height">
       <Tasks :tasks="tasks" @remove="removeTask" @update="updateTask"></Tasks>
     </el-scrollbar>
   </div>
