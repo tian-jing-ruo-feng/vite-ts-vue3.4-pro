@@ -17,7 +17,7 @@
         </template>
         <div v-if="getTasksByState(state as TaskState)">
           <task-item
-            v-for="task in getTasksByState(state as TaskState)"
+            v-for="task in getTasksByState(state as TaskState).filter(itask => !itask.isRemoved)"
             :key="task.id"
             :task="task"
             @delete-task="handleDeleteTask"

@@ -82,7 +82,7 @@ const addTask = () => {
       tasks.value.unshift({
         name: form.task,
         id: uuidv4(),
-        state: 'todo',
+        state: TASKS_TODO,
         createTime: dayjs().format(DATE_FORMAT)
       })
       form.task = ''
@@ -93,10 +93,9 @@ const addTask = () => {
 }
 const removeTask = (id: string) => {
   const taskIndex = findTaskIndexById(id)
-  tasks.value.splice(taskIndex, 1)
+  tasks.value[taskIndex].isRemoved = true
   // save tasks in localStorage
   setItem(tasks.value)
-  localStorage.setItem(TASKS, JSON.stringify(tasks.value))
 }
 const updateTask = (taskUpdated: TaskUpdated) => {
   const { id, state, updateTime } = taskUpdated

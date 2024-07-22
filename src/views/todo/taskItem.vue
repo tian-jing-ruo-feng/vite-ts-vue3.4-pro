@@ -110,6 +110,7 @@ export interface Task {
   name: string
   id: string
   state?: TaskState
+  isRemoved?: boolean
   createTime?: string
   updateTime?: string
 }
