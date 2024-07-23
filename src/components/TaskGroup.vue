@@ -46,17 +46,24 @@ const emit = defineEmits<{
 
 const { getItem, setItem } = useTaskGroups()
 const inputGroup = ref('')
-const allTask = {
-  id: uuidv4(),
-  name: '全部',
-  checked: true,
-  color: ''
-}
-const tags = ref<Tag[]>([allTask])
-setItem(tags.value)
+const tags = ref<Tag[]>([])
 const inputVisible = ref(false)
 const InputRef = ref<InstanceType<typeof ElInput>>()
 
+const initTaskGroup = () => {
+  const allTaskTag: Tag = {
+    id: uuidv4(),
+    name: '全部',
+    checked: true,
+    color: ''
+  }
+  if (tags.value.length) {
+    tags.value = getItem()
+  } else {
+    tags.value = [allTaskTag]
+  }
+  setItem(tags.value)
+}
 const handleClose = (tagIndex: number) => {
   emit('remove', tags.value[tagIndex])
   tags.value.splice(tagIndex, 1)
@@ -112,8 +119,7 @@ const getHexColor = () => {
 }
 
 onMounted(() => {
-  tags.value = getItem()
-  setItem(tags.value)
+  initTaskGroup()
 })
 </script>
 
