@@ -91,9 +91,11 @@ const addTask = () => {
       })
       tasks.value = allTasks!
       form.task = ''
+      formRef.value?.resetFields()
       // save tasks in localStorage
       setItem(tasks.value)
-      formRef.value?.resetFields()
+      // filter taskList for current tag selected
+      handleTagSelected(tagSelected.value!)
     }
   })
 }
