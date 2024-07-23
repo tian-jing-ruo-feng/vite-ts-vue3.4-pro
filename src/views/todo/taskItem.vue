@@ -88,7 +88,7 @@
       </el-button>
       <el-button
         size="small"
-        :disabled="() => canRemove(task)"
+        :disabled="canRemove"
         @click="$emit('deleteTask', task.id)"
       >
         <el-icon>
@@ -155,9 +155,10 @@ const taskState = ref<TaskState>(TASKS_TODO)
 const isTodo = computed(() => props.task?.state === 'todo')
 const isDone = computed(() => props.task?.state === 'done')
 const isArchive = computed(() => props.task?.state === 'archive')
+const canRemove = computed(
+  () => props.task.state === 'done' || props.task.state === 'archive'
+)
 const tooltipVisible = computed(() => visibleComputed.value && visible.value)
-
-const canRemove = (task: Task) => task.isRemoved || false
 
 const handleMouseEnter = () => {
   if (visible.value) {
