@@ -52,12 +52,12 @@ const InputRef = ref<InstanceType<typeof ElInput>>()
 
 const initTaskGroup = () => {
   const allTaskTag: Tag = {
-    id: uuidv4(),
+    id: 'all',
     name: '全部',
     checked: true,
     color: ''
   }
-  if (tags.value.length) {
+  if (getItem().length) {
     tags.value = getItem()
   } else {
     tags.value = [allTaskTag]

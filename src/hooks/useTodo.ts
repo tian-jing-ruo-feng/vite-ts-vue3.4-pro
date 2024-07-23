@@ -4,10 +4,9 @@ import { type Task } from '../views/todo/taskItem.vue'
 type Tasks = Task[] | null
 
 const useTodo = () => {
-  const tasks: Tasks = JSON.parse(localStorage.getItem(TASKS) as string)
-  const isExisted = tasks?.length
-
   const getItem = () => {
+    const tasks: Tasks = JSON.parse(localStorage.getItem(TASKS) as string)
+    const isExisted = tasks?.length
     return isExisted ? tasks : []
   }
 

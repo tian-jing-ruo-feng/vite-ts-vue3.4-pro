@@ -108,6 +108,7 @@ dayjs.extend(relativeTime)
 import { Finished, Timer } from '@element-plus/icons-vue'
 import { DATE_FORMAT, TASKS_DONE, TASKS_TODO } from '../../consts'
 import { useClipboard } from '@vueuse/core'
+import { Tag } from '../../components/TaskGroup.vue'
 
 export type TaskState = 'done' | 'todo' | 'archive'
 export interface Task {
@@ -115,6 +116,7 @@ export interface Task {
   id: string
   state?: TaskState
   isRemoved?: boolean
+  groupTag?: Tag['id']
   createTime?: string
   updateTime?: string
 }

@@ -9,6 +9,7 @@
         hide-required-asterisk
         ref="formRef"
         class="demo-form-inline"
+        @submit.prevent
       >
         <el-form-item label="添加任务：" prop="task">
           <el-input
@@ -24,7 +25,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <task-group></task-group>
+    <task-group @select="handleTagSelected"></task-group>
     <!-- operation button intro -->
     <el-scrollbar :height="height">
       <Tasks :tasks="tasks" @remove="removeTask" @update="updateTask"></Tasks>
@@ -38,7 +39,8 @@ import dayjs from 'dayjs'
 import { FormInstance, FormRules } from 'element-plus'
 import Tasks, { type TasksArr } from './tasks.vue'
 import { type Task, type TaskUpdated } from './taskItem.vue'
-import TaskGroup from '@/components/TaskGroup.vue'
+import TaskGroup from '../../components/TaskGroup.vue'
+import { type Tag } from '../../components/TaskGroup.vue'
 import { DATE_FORMAT, TASKS, TASKS_DONE, TASKS_TODO } from '../../consts'
 import useTodo from '../../hooks/useTodo'
 interface Form {
@@ -49,6 +51,7 @@ interface Form {
 
 const { getItem, setItem } = useTodo()
 
+const tagSelected = ref<Tag>()
 const tasks = ref<TasksArr>([])
 const inputTask = ref<HTMLInputElement>()
 const height = ref('60vh')
@@ -59,9 +62,6 @@ const form: Form = reactive({
 const validateTask = (rule: any, value: string, callback: any) => {
   if (value === '') {
     callback(new Error('请输入内容！'))
-    setTimeout(() => {
-      formRef.value?.resetFields()
-    }, 3000)
   } else {
     callback()
   }
@@ -76,18 +76,24 @@ const rules = reactive<FormRules<typeof form>>({
 
 const findTaskIndexById = (id: string) =>
   tasks.value.findIndex((task: Task) => task.id === id)
+
 const addTask = () => {
   formRef.value?.validate((isValid) => {
     if (isValid) {
-      tasks.value.unshift({
+      const allTasks = getItem()
+
+      allTasks?.unshift({
         name: form.task,
         id: uuidv4(),
         state: TASKS_TODO,
+        groupTag: tagSelected.value?.id || 'all',
         createTime: dayjs().format(DATE_FORMAT)
       })
+      tasks.value = allTasks!
       form.task = ''
       // save tasks in localStorage
       setItem(tasks.value)
+      formRef.value?.resetFields()
     }
   })
 }
@@ -104,6 +110,14 @@ const updateTask = (taskUpdated: TaskUpdated) => {
   tasks.value[taskIndex] = { ...task, state, updateTime }
   // save tasks in localStorage
   setItem(tasks.value)
+}
+const handleTagSelected = (tag: Tag) => {
+  tagSelected.value = tag
+  if (tag.id === 'all') {
+    tasks.value = getItem()
+  } else {
+    tasks.value = getItem().filter((task) => task.groupTag === tag.id)
+  }
 }
 
 onMounted(() => {
