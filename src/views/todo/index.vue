@@ -13,11 +13,12 @@
       >
         <el-form-item label="添加任务：" prop="task">
           <el-input
+            type="textarea"
             ref="inputTask"
             class="input-task"
             clearable
             v-model.trim="form.task"
-            @change="addTask"
+            @keyup.enter="addTask"
           ></el-input>
           <el-button class="add-button" @click="addTask">
             <el-icon color="green"><ep-plus></ep-plus></el-icon>
