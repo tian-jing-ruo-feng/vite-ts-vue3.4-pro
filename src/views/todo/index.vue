@@ -1,7 +1,14 @@
 <template>
   <div class="todo">
     <h2 class="title">TODO LIST</h2>
-    <div class="add-area">
+    <el-button type="primary" @click="showEdit=true" v-if="!showEdit">添加任务</el-button>
+    <Editor ref="eidtorRef" v-show="showEdit" :options="{ placeholder: '请输入内容'}"></Editor>
+    <el-button-group v-if="showEdit">
+      <el-button type="primary" @click="handleEditCancelConfirm('cancel')">取消</el-button>
+      <el-button type="primary" @click="handleEditCancelConfirm('confirm')">确认</el-button>
+    </el-button-group>
+    <el-divider />
+    <!-- <div class="add-area">
       <el-form
         :inline="true"
         :model="form"
@@ -25,11 +32,11 @@
           </el-button>
         </el-form-item>
       </el-form>
-    </div>
-    <task-group @select="handleTagSelected"></task-group>
+    </div> -->
+    <task-group v-if="false" @select="handleTagSelected"></task-group>
     <!-- operation button intro -->
     <el-scrollbar :height="height">
-      <Tasks :tasks="tasks" @remove="removeTask" @update="updateTask"></Tasks>
+      <Tasks v-if="false" :tasks="tasks" @remove="removeTask" @update="updateTask"></Tasks>
     </el-scrollbar>
   </div>
 </template>
@@ -44,6 +51,8 @@ import TaskGroup from '../../components/TaskGroup.vue'
 import { type Tag } from '../../components/TaskGroup.vue'
 import { DATE_FORMAT, TASKS, TASKS_DONE, TASKS_TODO } from '../../consts'
 import useTodo from '../../hooks/useTodo'
+import Editor, { type QuillEditorType} from './editor.vue'
+
 interface Form {
   task: string
 }
@@ -52,6 +61,8 @@ interface Form {
 
 const { getItem, setItem } = useTodo()
 
+const showEdit = ref(false)
+const eidtorRef = ref()
 const tagSelected = ref<Tag>()
 const tasks = ref<TasksArr>([])
 const inputTask = ref<HTMLInputElement>()
@@ -77,6 +88,7 @@ const rules = reactive<FormRules<typeof form>>({
 
 const findTaskIndexById = (id: string) =>
   tasks.value.findIndex((task: Task) => task.id === id)
+
 
 const addTask = () => {
   formRef.value?.validate((isValid) => {
@@ -121,6 +133,18 @@ const handleTagSelected = (tag: Tag) => {
   } else {
     tasks.value = getItem().filter((task) => task.groupTag === tag.id)
   }
+}
+const handleEditCancelConfirm = (type: 'cancel' | 'confirm') => {
+  if (type === 'cancel') {}
+  if (type === 'confirm') {
+    if (eidtorRef.value) {
+      const quillEditorRef = eidtorRef.value.quillEditorRef as QuillEditorType
+      const contents = quillEditorRef.getContents()
+      const text = quillEditorRef.getText()
+      console.log(contents, text)
+    }
+  }
+  showEdit.value = false
 }
 
 onMounted(() => {
