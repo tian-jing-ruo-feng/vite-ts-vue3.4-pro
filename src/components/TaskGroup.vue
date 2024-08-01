@@ -63,6 +63,7 @@ const initTaskGroup = () => {
     tags.value = [allTaskTag]
   }
   setItem(tags.value)
+  handleClick(0, false)
 }
 const handleClose = (tagIndex: number) => {
   emit('remove', tags.value[tagIndex])
@@ -118,7 +119,7 @@ const getHexColor = () => {
   return HexColor
 }
 
-onMounted(() => {
+onBeforeMount(() => {
   initTaskGroup()
 })
 </script>
@@ -130,7 +131,7 @@ onMounted(() => {
   gap: 8px;
   row-gap: 8px;
   column-gap: 8px;
-  border: 1px dashed var(--el-color-info-dark-2);
+  border: 1px solid #d4d7de;
 
   .task-tag {
     &:hover {

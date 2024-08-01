@@ -31,6 +31,7 @@ declare module 'vue' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     EpCopyDocument: typeof import('~icons/ep/copy-document')['default']
     EpDelete: typeof import('~icons/ep/delete')['default']
+    EpEditPen: typeof import('~icons/ep/edit-pen')['default']
     EpPlus: typeof import('~icons/ep/plus')['default']
     EpSuccessFilled: typeof import('~icons/ep/success-filled')['default']
     FaTelegram: typeof import('~icons/fa/telegram')['default']

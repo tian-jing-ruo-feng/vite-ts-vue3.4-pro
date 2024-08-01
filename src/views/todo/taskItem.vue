@@ -80,6 +80,17 @@
           <el-icon><ep-copy-document /></el-icon>
         </el-button>
       </el-tooltip>
+      <!-- 重新编辑 -->
+      <el-button
+        size="small"
+        plain
+        :disabled="canRemove"
+        @click="handleEdit(task)"
+      >
+        <el-icon>
+          <ep-edit-pen />
+        </el-icon>
+      </el-button>
       <!-- archive 归档到某个分类（文件夹） -->
       <el-button size="small" plain>
         <el-icon>
@@ -113,6 +124,7 @@ import { Tag } from '../../components/TaskGroup.vue'
 export type TaskState = 'done' | 'todo' | 'archive'
 export interface Task {
   name: string
+  html?: string
   id: string
   state?: TaskState
   isRemoved?: boolean
@@ -124,6 +136,10 @@ export interface TaskUpdated {
   state: TaskState
   id: string
   updateTime: string
+}
+export interface EditTaskType {
+  html: string
+  id: string
 }
 
 type Props = {
@@ -141,6 +157,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 // vue3.3+ 具名元组法
 const emit = defineEmits<{
+  editTask: [EditTaskType]
   deleteTask: [id: string]
   changeTaskState: [updateTask: TaskUpdated]
 }>()
@@ -175,6 +192,9 @@ const handleMouseLeave = () => {
   } else {
     visibleComputed.value = false
   }
+}
+const handleEdit = (task: Task) => {
+  emit('editTask', { html: task.html || '', id: task.id })
 }
 
 onBeforeMount(() => {

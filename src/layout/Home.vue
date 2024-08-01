@@ -10,7 +10,7 @@
       <el-main class="main">
         <el-card class="main-content-card">
           <Menu></Menu>
-          <div class="content">
+          <div class="content" ref="contentRef">
             <router-view></router-view>
           </div>
         </el-card>
@@ -24,6 +24,9 @@ import Menu from './Menu.vue'
 import pkg from '../../package.json'
 const { name, version, dependencies } = pkg
 const { vue: VueVersion } = dependencies
+
+const contentRef = ref<HTMLElement | null>(null)
+provide('mainContent', contentRef)
 </script>
 
 <style lang="scss" scoped>
@@ -52,7 +55,9 @@ const { vue: VueVersion } = dependencies
     .main-content-card {
       flex: 1;
       .content {
+        max-height: calc(100vh - 180px);
         padding: 20px;
+        overflow-y: auto;
       }
     }
   }
