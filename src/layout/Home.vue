@@ -52,7 +52,9 @@ const { vue: VueVersion } = dependencies
     .main-content-card {
       flex: 1;
       .content {
+        max-height: calc(100vh - 220px);
         padding: 20px;
+        overflow-y: auto;
       }
     }
   }
