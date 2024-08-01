@@ -20,6 +20,7 @@
             v-for="task in getTasksNotDeleted(state as TaskState)"
             :key="task.id"
             :task="task"
+            @edit-task="handleEditTask"
             @delete-task="handleDeleteTask"
             @change-task-state="handleChangeTaskState"
           ></task-item>
@@ -45,7 +46,8 @@ import { TASKS_ARCHIVE, TASKS_DONE, TASKS_TODO } from '../../consts'
 import taskItem, {
   type Task,
   type TaskUpdated,
-  type TaskState
+  type TaskState,
+  EditTaskType
 } from './taskItem.vue'
 export type TasksArr = Task[]
 interface Props {
@@ -57,6 +59,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
+  edit: [EditTaskType]
   remove: [id: string]
   update: [updateTask: TaskUpdated]
 }>()
@@ -79,6 +82,9 @@ const getTasksNotDeleted = (state: TaskState) => {
   return getTasksByState(state).filter((task) => !task.isRemoved)
 }
 
+const handleEditTask = (args: EditTaskType) => {
+  emit('edit', args)
+}
 const handleDeleteTask = (taskId: string) => {
   emit('remove', taskId)
 }
