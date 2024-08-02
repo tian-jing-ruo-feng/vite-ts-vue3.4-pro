@@ -65,6 +65,8 @@ interface Form {
 const mainContent = inject<Ref<HTMLElement>>('mainContent')
 const { getItem, setItem } = useTodo()
 
+const showEdit = ref(false)
+const eidtorRef = ref()
 const tagSelected = ref<Tag>()
 const tasks = ref<TasksArr>([])
 const inputTask = ref<HTMLInputElement>()
@@ -93,6 +95,7 @@ const rules = reactive<FormRules<typeof form>>({
 
 const findTaskIndexById = (id: string) =>
   tasks.value.findIndex((task: Task) => task.id === id)
+
 
 const addTask = () => {
   formRef.value?.validate((isValid) => {
