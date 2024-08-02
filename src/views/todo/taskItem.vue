@@ -52,15 +52,6 @@
           </span>
           <span class="task-name-content">{{ task.name }}</span>
         </span>
-        <p class="extro-info">
-          <span class="create-time">创建于：{{ task.createTime }}</span>
-          <span class="update-time" v-if="task.updateTime">
-            更新于：{{ task.updateTime }}</span
-          >
-          <span class="consumed-time" v-if="task.updateTime">
-            耗时：{{ dayjs(task.createTime).to(task.updateTime) }}</span
-          >
-        </p>
       </div>
     </el-tooltip>
     <div class="operation">
@@ -107,6 +98,61 @@
         </el-icon>
       </el-button>
     </div>
+    <div class="task-item-setting">
+      <div class="expect-start-time expect-time">
+        预计开始时间：
+        <el-date-picker
+          v-model="expectStartTime"
+          :disabled="canRemove"
+          :clearable="false"
+          type="datetime"
+          placeholder="请选择时间"
+          format="YYYY-MM-DD HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          date-format="YYYY-MM-DD"
+          time-format="HH:mm:ss"
+          @change="
+            $emit('changeTaskState', {
+              state: taskState,
+              id: task.id,
+              updateTime: dayjs().format(DATE_FORMAT),
+              expectStartTime: expectStartTime
+            })
+          "
+        />
+      </div>
+      <div class="expect-end-time expect-time">
+        预计结束时间：
+        <el-date-picker
+          v-model="expectEndTime"
+          :disabled="canRemove"
+          :clearable="false"
+          type="datetime"
+          placeholder="请选择时间"
+          format="YYYY-MM-DD HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          date-format="MMM DD, YYYY"
+          time-format="HH:mm"
+          @change="
+            $emit('changeTaskState', {
+              state: taskState,
+              id: task.id,
+              updateTime: dayjs().format(DATE_FORMAT),
+              expectEndTime: expectEndTime
+            })
+          "
+        />
+      </div>
+    </div>
+    <p class="extro-info">
+      <span class="create-time">创建于：{{ task.createTime }}</span>
+      <span class="update-time" v-if="task.updateTime">
+        更新于：{{ task.updateTime }}</span
+      >
+      <span class="consumed-time" v-if="task.updateTime">
+        耗时：{{ dayjs(task.createTime).to(task.updateTime) }}</span
+      >
+    </p>
   </li>
 </template>
 
@@ -131,11 +177,15 @@ export interface Task {
   groupTag?: Tag['id']
   createTime?: string
   updateTime?: string
+  expectStartTime?: string
+  expectEndTime?: string
 }
 export interface TaskUpdated {
   state: TaskState
   id: string
   updateTime: string
+  expectStartTime?: string
+  expectEndTime?: string
 }
 export interface EditTaskType {
   html: string
@@ -170,6 +220,8 @@ const popoverRef = ref()
 const visible = ref(false)
 const visibleComputed = ref(false)
 const taskState = ref<TaskState>(TASKS_TODO)
+const expectStartTime = ref('')
+const expectEndTime = ref('')
 
 const isTodo = computed(() => props.task?.state === 'todo')
 const isDone = computed(() => props.task?.state === 'done')
@@ -199,6 +251,8 @@ const handleEdit = (task: Task) => {
 
 onBeforeMount(() => {
   taskState.value = props.task.state as TaskState
+  expectStartTime.value = props.task.expectStartTime!
+  expectEndTime.value = props.task.expectEndTime!
 })
 onMounted(() => {
   const wrapWidth = taskWrap.value?.offsetWidth as number
@@ -226,6 +280,7 @@ onMounted(() => {
 <style scoped lang="scss">
 .task-item {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   padding: 10px 10px;
   margin-top: 10px;
@@ -253,22 +308,6 @@ onMounted(() => {
     .task-state {
       margin-right: 10px;
     }
-
-    .extro-info {
-      margin-top: 10px;
-      font-size: 12px;
-      color: #a8abb2;
-
-      .create-time,
-      .update-time,
-      .consumed-time {
-        padding-right: 10px;
-
-        &:last-of-type {
-          padding-right: 0;
-        }
-      }
-    }
   }
 
   .operation {
@@ -285,6 +324,38 @@ onMounted(() => {
     .done {
       vertical-align: middle;
       margin-right: 10px;
+    }
+  }
+
+  .task-item-setting {
+    display: block;
+    margin-top: 10px;
+    .expect-time {
+      display: inline-block;
+      font-weight: bold;
+    }
+    .expect-start-time {
+      color: #67c23a;
+      margin-right: 10px;
+    }
+    .expect-end-time {
+      color: #f56c6c;
+    }
+  }
+
+  .extro-info {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #a8abb2;
+
+    .create-time,
+    .update-time,
+    .consumed-time {
+      padding-right: 10px;
+
+      &:last-of-type {
+        padding-right: 0;
+      }
     }
   }
 }

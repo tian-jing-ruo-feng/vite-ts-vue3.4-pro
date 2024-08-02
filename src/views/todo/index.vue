@@ -135,10 +135,19 @@ const removeTask = (id: string) => {
   setItem(tasks.value)
 }
 const updateTask = (taskUpdated: TaskUpdated) => {
-  const { id, state, updateTime } = taskUpdated
+  const { id, state, updateTime, expectEndTime, expectStartTime } = taskUpdated
   const taskIndex = findTaskIndexById(id)
   const task = tasks.value[taskIndex]
-  tasks.value[taskIndex] = { ...task, state, updateTime }
+  let setting = {}
+  expectEndTime && Object.assign(setting, { expectEndTime })
+  expectStartTime && Object.assign(setting, { expectStartTime })
+  tasks.value[taskIndex] = {
+    ...task,
+    state,
+    updateTime,
+    ...setting
+  }
+
   // save tasks in localStorage
   setItem(tasks.value)
 }
