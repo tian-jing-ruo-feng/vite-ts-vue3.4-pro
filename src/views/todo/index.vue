@@ -29,7 +29,7 @@
     <Editor
       :height="'150px'"
       :edit-content="editContent"
-      @cancel="editContent = ''"
+      @cancel="handleEditorCancel"
       @confirm="handleEditorConfirm"
     ></Editor>
     <el-divider> 分组 </el-divider>
@@ -152,6 +152,10 @@ const handleTagSelected = (tag: Tag) => {
 const clearCurrentEditTask = () => {
   currentEditId.value = ''
   currentEditTask.value = null
+}
+const handleEditorCancel = () => {
+  editContent.value = ''
+  clearCurrentEditTask()
 }
 const handleEditorConfirm = (args: ConfirmEventArgType) => {
   const { content, text, html } = args
