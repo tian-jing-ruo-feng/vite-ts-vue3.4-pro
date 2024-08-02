@@ -1,0 +1,36 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:20.15.0
+    branches:
+      only:
+        - main
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - 'e5:cb:47:4d:45:3e:57:49:dd:2b:b2:15:88:2d:6d:45'
+      - checkout
+      # 使用node_modules缓存
+      - restore_cache:
+          keys:
+            - node_dependencies
+      - run:
+          name: Install
+          command: npm install
+      # 对node_modules 进行缓存
+      - save_cache:
+          paths:
+            - node_modules
+          key: node_dependencies
+      - run:
+          name: Build
+          command: npm run build
+      - run:
+          name: Auth Deploy
+          # 设置文件权限
+          command: chmod +x scripts/deploy.sh
+      - run:
+          name: Deploy
+          # 执行shell脚本
+          command: ./scripts/deploy.sh
