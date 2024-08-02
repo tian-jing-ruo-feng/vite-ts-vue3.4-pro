@@ -101,13 +101,13 @@
     </div>
     <div class="task-item-setting">
       <div class="expect-start-time expect-time">
-        预计开始时间：
+        <!-- 预计开始时间： -->
         <el-date-picker
           v-model="expectStartTime"
           :disabled="canRemove"
           :clearable="false"
           type="datetime"
-          placeholder="请选择时间"
+          placeholder="预计开始时间"
           format="YYYY-MM-DD HH:mm:ss"
           value-format="YYYY-MM-DD HH:mm:ss"
           date-format="YYYY-MM-DD"
@@ -123,13 +123,13 @@
         />
       </div>
       <div class="expect-end-time expect-time">
-        预计结束时间：
+        <!-- 预计结束时间： -->
         <el-date-picker
           v-model="expectEndTime"
           :disabled="canRemove"
           :clearable="false"
           type="datetime"
-          placeholder="请选择时间"
+          placeholder="预计结束时间"
           format="YYYY-MM-DD HH:mm:ss"
           value-format="YYYY-MM-DD HH:mm:ss"
           date-format="MMM DD, YYYY"
@@ -347,7 +347,7 @@ onMounted(() => {
   }
 
   .task-item-setting {
-    display: block;
+    width: 100%;
     margin-top: 10px;
     .expect-time {
       display: inline-block;
