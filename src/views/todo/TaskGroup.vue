@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { ElInput } from 'element-plus'
 import { v4 as uuidv4 } from 'uuid'
-import useTaskGroups from '../hooks/useTaskGroups'
+import useTaskGroups from '../../hooks/useTaskGroups'
 
 export interface Tag {
   id: string

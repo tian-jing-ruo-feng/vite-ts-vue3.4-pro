@@ -7,6 +7,7 @@
       'task-archive': isArchive
     }"
   >
+    <GroupTag class="task-group-tag" :tag-name="tagName"></GroupTag>
     <el-tooltip
       :visible="tooltipVisible"
       :show-arrow="false"
@@ -163,9 +164,11 @@ import dayjs from 'dayjs'
 dayjs.locale('zh-cn')
 dayjs.extend(relativeTime)
 import { Finished, Timer } from '@element-plus/icons-vue'
-import { DATE_FORMAT, TASKS_DONE, TASKS_TODO } from '../../consts'
 import { useClipboard } from '@vueuse/core'
-import { Tag } from '../../components/TaskGroup.vue'
+import { DATE_FORMAT, TASKS_DONE, TASKS_TODO } from '../../consts'
+import useTaskGroups from '../../hooks/useTaskGroups'
+import { Tag } from './TaskGroup.vue'
+import GroupTag from './GroupTag.vue'
 
 export type TaskState = 'done' | 'todo' | 'archive'
 export interface Task {
@@ -212,7 +215,9 @@ const emit = defineEmits<{
   changeTaskState: [updateTask: TaskUpdated]
 }>()
 
+const { getItem } = useTaskGroups()
 const { copy, copied } = useClipboard()
+const taskGroups = getItem()
 const taskWrap = ref<HTMLElement>()
 const taskName = ref<HTMLElement>()
 const buttonRef = ref()
@@ -230,6 +235,14 @@ const canRemove = computed(
   () => props.task.state === 'done' || props.task.state === 'archive'
 )
 const tooltipVisible = computed(() => visibleComputed.value && visible.value)
+const tagName = computed(() => {
+  const group = taskGroups.filter((tag) => tag.id === props.task.groupTag)
+  if (group?.length) {
+    return group[0].name
+  } else {
+    return ''
+  }
+})
 
 const handleMouseEnter = () => {
   if (visible.value) {
@@ -279,6 +292,7 @@ onMounted(() => {
 </style>
 <style scoped lang="scss">
 .task-item {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -295,11 +309,16 @@ onMounted(() => {
   //   color: #fff;
   // }
 
+  .task-group-tag {
+    position: absolute;
+    left: 10px;
+    top: 0;
+  }
+
   .task-name {
     width: calc(100% - 200px);
+    margin-top: 20px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 
     .task-state,
     .task-name-content {

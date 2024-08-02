@@ -1,6 +1,7 @@
 <template>
   <div class="todo">
     <h2 class="title">TODO LIST</h2>
+    <task-group @select="handleTagSelected"></task-group>
     <div class="add-area" v-if="false">
       <el-form
         :inline="true"
@@ -32,8 +33,6 @@
       @cancel="handleEditorCancel"
       @confirm="handleEditorConfirm"
     ></Editor>
-    <el-divider> 分组 </el-divider>
-    <task-group @select="handleTagSelected"></task-group>
     <!-- operation button intro -->
     <el-divider> 任务列表 </el-divider>
     <el-scrollbar :height="height">
@@ -53,11 +52,11 @@ import dayjs from 'dayjs'
 import { FormInstance, FormRules } from 'element-plus'
 import Tasks, { type TasksArr } from './tasks.vue'
 import { EditTaskType, type Task, type TaskUpdated } from './taskItem.vue'
-import TaskGroup from '../../components/TaskGroup.vue'
-import { type Tag } from '../../components/TaskGroup.vue'
+import TaskGroup from './TaskGroup.vue'
+import { type Tag } from './TaskGroup.vue'
 import { DATE_FORMAT, TASKS, TASKS_DONE, TASKS_TODO } from '../../consts'
 import useTodo from '../../hooks/useTodo'
-import Editor, { ConfirmEventArgType } from './Editor'
+import Editor, { ConfirmEventArgType } from './Editor.vue'
 interface Form {
   task: string
 }
