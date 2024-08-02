@@ -57,7 +57,7 @@ import TaskGroup from '../../components/TaskGroup.vue'
 import { type Tag } from '../../components/TaskGroup.vue'
 import { DATE_FORMAT, TASKS, TASKS_DONE, TASKS_TODO } from '../../consts'
 import useTodo from '../../hooks/useTodo'
-import Editor, { ConfirmEventArgType } from './Editor.vue'
+import Editor, { ConfirmEventArgType } from './editor.vue'
 interface Form {
   task: string
 }
@@ -95,7 +95,6 @@ const rules = reactive<FormRules<typeof form>>({
 
 const findTaskIndexById = (id: string) =>
   tasks.value.findIndex((task: Task) => task.id === id)
-
 
 const addTask = () => {
   formRef.value?.validate((isValid) => {
