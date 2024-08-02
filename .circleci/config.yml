@@ -16,6 +16,9 @@ jobs:
           keys:
             - node_dependencies
       - run:
+        name: Clean Npm Cache
+        command: npm cache clean --froce
+      - run:
           name: Install
           command: npm install
       # 对node_modules 进行缓存
