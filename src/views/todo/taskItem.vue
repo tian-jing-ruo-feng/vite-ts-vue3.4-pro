@@ -7,7 +7,59 @@
       'task-archive': isArchive
     }"
   >
-    <GroupTag class="task-group-tag" :tag-name="tagName"></GroupTag>
+    <div class="tag-time-setting">
+      <GroupTag class="task-group-tag" :tag-name="tagName"></GroupTag>
+      <div class="task-item-setting">
+        <div class="expect-start-time expect-time">
+          <!-- 预计开始时间： -->
+          <el-date-picker
+            v-model="expectStartTime"
+            :disabled="canRemove"
+            :clearable="false"
+            :prefix-icon="VideoPlay"
+            type="datetime"
+            size="small"
+            placeholder="预计开始时间"
+            format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            date-format="YYYY-MM-DD"
+            time-format="HH:mm:ss"
+            @change="
+              $emit('changeTaskState', {
+                state: taskState,
+                id: task.id,
+                updateTime: dayjs().format(DATE_FORMAT),
+                expectStartTime: expectStartTime
+              })
+            "
+          />
+        </div>
+        <div class="expect-end-time expect-time">
+          <!-- 预计结束时间： -->
+          <el-date-picker
+            v-model="expectEndTime"
+            :disabled="canRemove"
+            :clearable="false"
+            :prefix-icon="VideoPause"
+            size="small"
+            type="datetime"
+            placeholder="预计结束时间"
+            format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            date-format="MMM DD, YYYY"
+            time-format="HH:mm"
+            @change="
+              $emit('changeTaskState', {
+                state: taskState,
+                id: task.id,
+                updateTime: dayjs().format(DATE_FORMAT),
+                expectEndTime: expectEndTime
+              })
+            "
+          />
+        </div>
+      </div>
+    </div>
     <el-tooltip
       :visible="tooltipVisible"
       :show-arrow="false"
@@ -99,52 +151,7 @@
         </el-icon>
       </el-button>
     </div>
-    <div class="task-item-setting">
-      <div class="expect-start-time expect-time">
-        <!-- 预计开始时间： -->
-        <el-date-picker
-          v-model="expectStartTime"
-          :disabled="canRemove"
-          :clearable="false"
-          type="datetime"
-          placeholder="预计开始时间"
-          format="YYYY-MM-DD HH:mm:ss"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          date-format="YYYY-MM-DD"
-          time-format="HH:mm:ss"
-          @change="
-            $emit('changeTaskState', {
-              state: taskState,
-              id: task.id,
-              updateTime: dayjs().format(DATE_FORMAT),
-              expectStartTime: expectStartTime
-            })
-          "
-        />
-      </div>
-      <div class="expect-end-time expect-time">
-        <!-- 预计结束时间： -->
-        <el-date-picker
-          v-model="expectEndTime"
-          :disabled="canRemove"
-          :clearable="false"
-          type="datetime"
-          placeholder="预计结束时间"
-          format="YYYY-MM-DD HH:mm:ss"
-          value-format="YYYY-MM-DD HH:mm:ss"
-          date-format="MMM DD, YYYY"
-          time-format="HH:mm"
-          @change="
-            $emit('changeTaskState', {
-              state: taskState,
-              id: task.id,
-              updateTime: dayjs().format(DATE_FORMAT),
-              expectEndTime: expectEndTime
-            })
-          "
-        />
-      </div>
-    </div>
+
     <p class="extro-info">
       <span class="create-time">创建于：{{ task.createTime }}</span>
       <span class="update-time" v-if="task.updateTime">
@@ -163,7 +170,7 @@ import 'dayjs/locale/zh-cn'
 import dayjs from 'dayjs'
 dayjs.locale('zh-cn')
 dayjs.extend(relativeTime)
-import { Finished, Timer } from '@element-plus/icons-vue'
+import { Finished, Timer, VideoPause, VideoPlay } from '@element-plus/icons-vue'
 import { useClipboard } from '@vueuse/core'
 import { DATE_FORMAT, TASKS_DONE, TASKS_TODO } from '../../consts'
 import useTaskGroups from '../../hooks/useTaskGroups'
@@ -309,15 +316,30 @@ onMounted(() => {
   //   color: #fff;
   // }
 
-  .task-group-tag {
-    position: absolute;
-    left: 10px;
-    top: 0;
+  .tag-time-setting {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+    .task-item-setting {
+      position: absolute;
+      right: 0;
+      top: 0;
+      .expect-time {
+        display: inline-block;
+        font-weight: bold;
+      }
+      .expect-start-time {
+        color: #67c23a;
+        margin-right: 10px;
+      }
+      .expect-end-time {
+        color: #f56c6c;
+      }
+    }
   }
 
   .task-name {
     width: calc(100% - 200px);
-    margin-top: 20px;
     overflow: hidden;
 
     .task-state,
@@ -343,22 +365,6 @@ onMounted(() => {
     .done {
       vertical-align: middle;
       margin-right: 10px;
-    }
-  }
-
-  .task-item-setting {
-    width: 100%;
-    margin-top: 10px;
-    .expect-time {
-      display: inline-block;
-      font-weight: bold;
-    }
-    .expect-start-time {
-      color: #67c23a;
-      margin-right: 10px;
-    }
-    .expect-end-time {
-      color: #f56c6c;
     }
   }
 

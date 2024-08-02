@@ -209,7 +209,7 @@ onMounted(() => {
 .todo {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 75%;
   margin: 0 auto;
   .title {
     font-weight: bold;
