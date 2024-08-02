@@ -37,6 +37,7 @@ fi
 
 # 将构建好的文件目录拷贝进去
 # cp -a "../${STATIC_RESOURCE}/." .
+ls
 cp -a "../${STATIC_RESOURCE}/." .
 # 将所有文件添加到git
 git add -A
