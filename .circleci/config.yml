@@ -2,14 +2,14 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:20.15.0
+      - image: cimg/node:22.5.1
     branches:
       only:
         - main
     steps:
       - add_ssh_keys:
           fingerprints:
-            - 'e5:cb:47:4d:45:3e:57:49:dd:2b:b2:15:88:2d:6d:45'
+            - 'SHA256:crpMETZFR/N8303oQRBLQjI7lxr9Hg7v7uoS8poyslQ'
       - checkout
       # 使用node_modules缓存
       - restore_cache:
