@@ -17,7 +17,7 @@ jobs:
             - node_dependencies
       - run:
         name: Clean Npm Cache
-        command: npm cache clean --froce
+        command: npm cache clean --force
       - run:
           name: Install
           command: npm install
