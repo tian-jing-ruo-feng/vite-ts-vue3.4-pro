@@ -57,7 +57,7 @@ import TaskGroup from '../../components/TaskGroup.vue'
 import { type Tag } from '../../components/TaskGroup.vue'
 import { DATE_FORMAT, TASKS, TASKS_DONE, TASKS_TODO } from '../../consts'
 import useTodo from '../../hooks/useTodo'
-import Editor, { ConfirmEventArgType } from './Editor'
+import Editor, { ConfirmEventArgType } from './Editor.vue'
 interface Form {
   task: string
 }
