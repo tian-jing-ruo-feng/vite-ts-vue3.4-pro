@@ -4,9 +4,8 @@
   </div>
 </template>
 
-<script setup lang='ts'>
-import NestDraggable from '@/components/NestDraggable.vue'
+<script setup lang="ts">
+import NestDraggable from '../../components/NestDraggable.vue'
 </script>
 
-<style lang='scss' scoped>
-</style>
+<style lang="scss" scoped></style>
