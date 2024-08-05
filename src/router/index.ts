@@ -1,4 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  createWebHashHistory
+} from 'vue-router'
 import { type RouteRecordRaw } from 'vue-router'
 import { name } from '../../package.json'
 
@@ -29,7 +33,7 @@ export const routes: RouteRecordRaw[] = [
   },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: Home }
 ]
-const history = createWebHistory(import.meta.env.BASE_URL)
+const history = createWebHashHistory(import.meta.env.BASE_URL)
 
 const router = createRouter({
   history,
