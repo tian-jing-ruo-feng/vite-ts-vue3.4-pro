@@ -27,11 +27,7 @@ export const routes: RouteRecordRaw[] = [
       }
     ]
   },
-  {
-    name: '404',
-    path: '*',
-    component: Home
-  }
+  { path: '/:pathMatch(.*)*', name: 'NotFound', component: Home }
 ]
 const history = createWebHistory()
 
