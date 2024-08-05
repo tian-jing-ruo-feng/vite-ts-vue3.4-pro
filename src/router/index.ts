@@ -26,6 +26,11 @@ export const routes: RouteRecordRaw[] = [
         component: () => import('../views/example/List.vue')
       }
     ]
+  },
+  {
+    name: '404',
+    path: '*',
+    component: Home
   }
 ]
 const history = createWebHistory()
