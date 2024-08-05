@@ -8,11 +8,7 @@
     }"
   >
     <div class="tag-time-setting">
-      <GroupTag
-        class="task-group-tag"
-        :tag-name="tagName"
-        :key="task.id"
-      ></GroupTag>
+      <GroupTag class="task-group-tag" :tag="tag" :key="task.id"></GroupTag>
       <div class="task-item-setting">
         <div class="expect-start-time expect-time">
           <!-- 预计开始时间： -->
@@ -245,12 +241,12 @@ const canRemove = computed(
   () => props.task.state === 'done' || props.task.state === 'archive'
 )
 const tooltipVisible = computed(() => visibleComputed.value && visible.value)
-const tagName = computed(() => {
+const tag = computed(() => {
   const group = getItem().filter((tag) => tag.id === props.task.groupTag)
   if (group?.length) {
-    return group[0].name
+    return group[0]
   } else {
-    return ''
+    return null
   }
 })
 

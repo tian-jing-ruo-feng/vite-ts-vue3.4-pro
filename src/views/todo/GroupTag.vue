@@ -4,17 +4,25 @@
       <el-icon size="16" class="tag-icon">
         <ep-collection-tag></ep-collection-tag>
       </el-icon>
-      {{ tagName }}
+      <span class="name" :class="{ 'is-deleted': tag!.isDeleted }">
+        {{ tag!.name }}
+      </span>
     </el-tag>
   </div>
 </template>
 
 <script setup lang="ts">
+import { Tag } from './TaskGroup.vue'
 interface Props {
-  tagName: string
+  tag: Partial<Tag> | null
 }
 withDefaults(defineProps<Props>(), {
-  tagName: '分组标签'
+  tag: () => {
+    return {
+      name: '分组标签',
+      isDeleted: false
+    }
+  }
 })
 </script>
 
@@ -24,6 +32,11 @@ withDefaults(defineProps<Props>(), {
   // border-radius: 4px;
   .tag-icon {
     vertical-align: text-bottom;
+  }
+
+  .is-deleted {
+    text-decoration: line-through;
+    color: #c0c4cc;
   }
 }
 </style>

@@ -1,44 +1,45 @@
 <template>
   <div class="task-group">
-    <el-tag
-      size="large"
-      class="task-tag"
-      v-for="(tag, index) in tags"
-      :key="`tag-${index}`"
-      :style="{ '--tag-color': tag.color }"
-      :class="{ 'is-editing': tag.edited }"
-      :disable-transitions="false"
-      :checked="tag.checked"
-      :effect="tag.checked ? 'dark' : 'light'"
-      @click="handleClick(index, tag.checked)"
-      @dblclick="handleDoubleClick(index, tag.checked)"
-      @close="handleClose(index)"
-    >
-      <span class="tag-name" v-if="!tag.edited">{{ tag.name }}</span>
-      <el-input
-        v-else
-        ref="taskEditedRef"
-        v-model="tag.name"
-        @keyup.enter="handleEditEnter(tag)"
-        @blur="handleEditBlur(tag)"
-      ></el-input>
-      <el-popconfirm
-        width="100"
-        confirm-button-text="确认"
-        cancel-button-text="取消"
-        icon-color="#F56C6C"
-        title="确认删除分组?"
-        v-if="!!index && !tag.edited"
-        :icon="InfoFilled"
-        @confirm="handleClose(index)"
+    <div v-for="(tag, index) in tags" :key="`tag-${index}`">
+      <el-tag
+        size="large"
+        class="task-tag"
+        v-if="!tag.isDeleted"
+        :style="{ '--tag-color': tag.color }"
+        :class="{ 'is-editing': tag.edited }"
+        :disable-transitions="false"
+        :checked="tag.checked"
+        :effect="tag.checked ? 'dark' : 'light'"
+        @click="handleClick(index, tag.checked)"
+        @dblclick="handleDoubleClick(index, tag.checked)"
+        @close="handleClose(index)"
       >
-        <template #reference>
-          <el-icon class="del-button">
-            <Delete></Delete>
-          </el-icon>
-        </template>
-      </el-popconfirm>
-    </el-tag>
+        <span class="tag-name" v-if="!tag.edited">{{ tag.name }}</span>
+        <el-input
+          v-else
+          ref="taskEditedRef"
+          v-model="tag.name"
+          @keyup.enter="handleEditEnter(tag)"
+          @blur="handleEditBlur(tag)"
+        ></el-input>
+        <el-popconfirm
+          width="100"
+          confirm-button-text="确认"
+          cancel-button-text="取消"
+          icon-color="#F56C6C"
+          title="确认删除分组?"
+          v-if="!!index && !tag.edited"
+          :icon="InfoFilled"
+          @confirm="handleClose(index)"
+        >
+          <template #reference>
+            <el-icon class="del-button">
+              <Delete></Delete>
+            </el-icon>
+          </template>
+        </el-popconfirm>
+      </el-tag>
+    </div>
     <el-input
       v-if="inputVisible"
       ref="InputRef"
@@ -69,6 +70,7 @@ export interface Tag {
   color: string
   checked: boolean
   edited?: boolean
+  isDeleted?: boolean
 }
 
 const emit = defineEmits<{
@@ -92,7 +94,8 @@ const initTaskGroup = async () => {
     name: '全部',
     checked: true,
     edited: false,
-    color: ''
+    color: '',
+    isDeleted: false
   }
   if (getItem().length) {
     tags.value = getItem().map((tag) => {
@@ -108,7 +111,9 @@ const initTaskGroup = async () => {
 }
 const handleClose = (tagIndex: number) => {
   emit('remove', tags.value[tagIndex])
-  tags.value.splice(tagIndex, 1)
+  // tags.value.splice(tagIndex, 1)
+  // soft delete
+  tags.value[tagIndex].isDeleted = true
   setItem(tags.value)
 }
 const handleClick = (tagIndex: number, tagChecked: boolean) => {
@@ -207,9 +212,6 @@ onBeforeMount(() => {
 .task-group {
   display: flex;
   padding: 10px 4px;
-  gap: 8px;
-  row-gap: 8px;
-  column-gap: 8px;
   border: 1px solid #d4d7de;
 
   .task-tag {
