@@ -8,7 +8,11 @@
     }"
   >
     <div class="tag-time-setting">
-      <GroupTag class="task-group-tag" :tag-name="tagName"></GroupTag>
+      <GroupTag
+        class="task-group-tag"
+        :tag-name="tagName"
+        :key="task.id"
+      ></GroupTag>
       <div class="task-item-setting">
         <div class="expect-start-time expect-time">
           <!-- 预计开始时间： -->
@@ -224,7 +228,6 @@ const emit = defineEmits<{
 
 const { getItem } = useTaskGroups()
 const { copy, copied } = useClipboard()
-const taskGroups = getItem()
 const taskWrap = ref<HTMLElement>()
 const taskName = ref<HTMLElement>()
 const buttonRef = ref()
@@ -243,7 +246,7 @@ const canRemove = computed(
 )
 const tooltipVisible = computed(() => visibleComputed.value && visible.value)
 const tagName = computed(() => {
-  const group = taskGroups.filter((tag) => tag.id === props.task.groupTag)
+  const group = getItem().filter((tag) => tag.id === props.task.groupTag)
   if (group?.length) {
     return group[0].name
   } else {
