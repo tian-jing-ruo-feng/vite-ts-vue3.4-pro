@@ -29,7 +29,7 @@ export const routes: RouteRecordRaw[] = [
   },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: Home }
 ]
-const history = createWebHistory()
+const history = createWebHistory(import.meta.env.BASE_URL)
 
 const router = createRouter({
   history,
