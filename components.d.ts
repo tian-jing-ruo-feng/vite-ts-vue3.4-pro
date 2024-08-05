@@ -20,7 +20,6 @@ declare module 'vue' {
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElHeader: typeof import('element-plus/es')['ElHeader']
-    ElIco: typeof import('element-plus/es')['ElIco']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInput: typeof import('element-plus/es')['ElInput']
     ElMain: typeof import('element-plus/es')['ElMain']
@@ -30,7 +29,6 @@ declare module 'vue' {
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
-    ElWatermark: typeof import('element-plus/es')['ElWatermark']
     EpCollectionTag: typeof import('~icons/ep/collection-tag')['default']
     EpCopyDocument: typeof import('~icons/ep/copy-document')['default']
     EpDelete: typeof import('~icons/ep/delete')['default']
@@ -42,6 +40,5 @@ declare module 'vue' {
     RawData: typeof import('./src/components/RawData.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    TaskGroup: typeof import('./src/components/TaskGroup.vue')['default']
   }
 }
