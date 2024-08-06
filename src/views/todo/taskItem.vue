@@ -4,7 +4,8 @@
     :class="{
       'task-todo': isTodo,
       'task-done': isDone,
-      'task-archive': isArchive
+      'task-archive': isArchive,
+      'is-archive': isArchive
     }"
   >
     <div class="tag-time-setting">
@@ -46,8 +47,8 @@
             placeholder="预计结束时间"
             format="YYYY-MM-DD HH:mm:ss"
             value-format="YYYY-MM-DD HH:mm:ss"
-            date-format="MMM DD, YYYY"
-            time-format="HH:mm"
+            date-format="YYYY-MM-DD"
+            time-format="HH:mm:ss"
             @change="
               $emit('changeTaskState', {
                 state: taskState,
@@ -80,7 +81,7 @@
         @mouseleave="handleMouseLeave"
       >
         <span ref="taskName">
-          <span class="task-state">
+          <span class="task-state" v-if="!isArchive">
             <el-switch
               v-model="taskState"
               inline-prompt
@@ -94,13 +95,7 @@
               :inactive-value="TASKS_TODO"
               :active-action-icon="Finished"
               :inactive-action-icon="Timer"
-              @change="
-                $emit('changeTaskState', {
-                  state: taskState,
-                  id: task.id,
-                  updateTime: dayjs().format(DATE_FORMAT)
-                })
-              "
+              @change="handleStateChange"
             />
           </span>
           <span class="task-name-content">{{ task.name }}</span>
@@ -136,7 +131,12 @@
         </el-icon>
       </el-button>
       <!-- archive 归档到某个分类（文件夹） -->
-      <el-button size="small" plain>
+      <el-button
+        size="small"
+        :disabled="canRemove"
+        plain
+        @click="handleArchive(task)"
+      >
         <el-icon>
           <fa-telegram color="#41b883"></fa-telegram>
         </el-icon>
@@ -172,10 +172,16 @@ dayjs.locale('zh-cn')
 dayjs.extend(relativeTime)
 import { Finished, Timer, VideoPause, VideoPlay } from '@element-plus/icons-vue'
 import { useClipboard } from '@vueuse/core'
-import { DATE_FORMAT, TASKS_DONE, TASKS_TODO } from '../../consts'
+import {
+  DATE_FORMAT,
+  TASKS_ARCHIVE,
+  TASKS_DONE,
+  TASKS_TODO
+} from '../../consts'
 import useTaskGroups from '../../hooks/useTaskGroups'
 import { Tag } from './TaskGroup.vue'
 import GroupTag from './GroupTag.vue'
+import { id } from 'element-plus/es/locales.mjs'
 
 export type TaskState = 'done' | 'todo' | 'archive'
 export interface Task {
@@ -267,6 +273,20 @@ const handleMouseLeave = () => {
 const handleEdit = (task: Task) => {
   emit('editTask', { html: task.html || '', id: task.id })
 }
+const handleStateChange = (state: TaskState) => {
+  emit('changeTaskState', {
+    state,
+    id: props.task.id,
+    updateTime: dayjs().format(DATE_FORMAT)
+  })
+}
+const handleArchive = (task: Task) => {
+  emit('changeTaskState', {
+    id: task.id,
+    state: TASKS_ARCHIVE,
+    updateTime: dayjs().format(DATE_FORMAT)
+  })
+}
 
 onBeforeMount(() => {
   taskState.value = props.task.state as TaskState
@@ -307,6 +327,10 @@ onMounted(() => {
   box-shadow: var(--el-box-shadow-light);
   vertical-align: middle;
 
+  &.is-archive {
+    background: rgba($color: #c0c4cc, $alpha: 0.2);
+    box-shadow: none;
+  }
   &:first-of-type {
     margin-top: 0;
   }
