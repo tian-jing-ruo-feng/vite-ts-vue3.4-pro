@@ -1,6 +1,6 @@
 <template>
   <div class="task-group">
-    <div v-for="(tag, index) in tags" :key="`tag-${index}`">
+    <div v-for="(tag, index) in tags" :key="`tag-${index}`" class="tag-wrapper">
       <el-tag
         size="large"
         class="task-tag"
@@ -110,11 +110,11 @@ const initTaskGroup = async () => {
   handleClick(0, false)
 }
 const handleClose = (tagIndex: number) => {
-  emit('remove', tags.value[tagIndex])
   // tags.value.splice(tagIndex, 1)
   // soft delete
   tags.value[tagIndex].isDeleted = true
   setItem(tags.value)
+  handleClick(0, false)
 }
 const handleClick = (tagIndex: number, tagChecked: boolean) => {
   timer.value = setTimeout(() => {
@@ -214,7 +214,15 @@ onBeforeMount(() => {
   padding: 10px 4px;
   border: 1px solid #d4d7de;
 
+  .tag-wrapper {
+    &:first-of-type {
+      .tag-name {
+        margin-right: 0;
+      }
+    }
+  }
   .task-tag {
+    margin-right: 10px;
     &:hover {
       cursor: pointer;
       user-select: none;
