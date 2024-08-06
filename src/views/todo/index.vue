@@ -93,7 +93,7 @@ const rules = reactive<FormRules<typeof form>>({
 })
 
 const findTaskIndexById = (id: string) =>
-  tasks.value.findIndex((task: Task) => task.id === id)
+  getItem().findIndex((task: Task) => task.id === id)
 
 const addTask = () => {
   formRef.value?.validate((isValid) => {
@@ -136,11 +136,12 @@ const removeTask = (id: string) => {
 const updateTask = (taskUpdated: TaskUpdated) => {
   const { id, state, updateTime, expectEndTime, expectStartTime } = taskUpdated
   const taskIndex = findTaskIndexById(id)
-  const task = tasks.value[taskIndex]
+  const tasks = getItem()
+  const task = tasks[taskIndex]
   let setting = {}
   expectEndTime && Object.assign(setting, { expectEndTime })
   expectStartTime && Object.assign(setting, { expectStartTime })
-  tasks.value[taskIndex] = {
+  tasks[taskIndex] = {
     ...task,
     state,
     updateTime,
@@ -148,7 +149,9 @@ const updateTask = (taskUpdated: TaskUpdated) => {
   }
 
   // save tasks in localStorage
-  setItem(tasks.value)
+  setItem(tasks)
+  // update current list under current group tag
+  handleTagSelected(tagSelected.value!)
 }
 const handleTagSelected = (tag: Tag) => {
   tagSelected.value = tag
