@@ -100,7 +100,7 @@ const addTask = () => {
     if (isValid) {
       const allTasks = getItem()
 
-      allTasks?.unshift({
+      allTasks?.push({
         name: form.task,
         id: uuidv4(),
         state: TASKS_TODO,
@@ -183,7 +183,7 @@ const handleEditorConfirm = (args: ConfirmEventArgType) => {
     clearCurrentEditTask()
   } else {
     // add a new task
-    allTasks?.unshift({
+    allTasks?.push({
       name: text,
       html: html,
       id: uuidv4(),
