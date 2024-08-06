@@ -133,7 +133,7 @@
       <!-- archive 归档到某个分类（文件夹） -->
       <el-button
         size="small"
-        :disabled="canRemove"
+        :disabled="isArchive"
         plain
         @click="handleArchive(task)"
       >
