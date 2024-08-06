@@ -57,6 +57,8 @@ import { type Tag } from './TaskGroup.vue'
 import { DATE_FORMAT, TASKS, TASKS_DONE, TASKS_TODO } from '../../consts'
 import useTodo from '../../hooks/useTodo'
 import Editor, { ConfirmEventArgType } from './Editor.vue'
+import { useTasksStore } from '../../store/tasks'
+const store = useTasksStore()
 interface Form {
   task: string
 }
@@ -128,28 +130,16 @@ const editTask = (args: EditTaskType) => {
   mainContent?.value.scrollTo(0, 0)
 }
 const removeTask = (id: string) => {
-  const taskIndex = findTaskIndexById(id)
-  tasks.value[taskIndex].isRemoved = true
-  // save tasks in localStorage
-  setItem(tasks.value)
+  const updateTask = {
+    ...store.getTaskById(id),
+    isRemoved: true
+  }
+  store.updateTask(updateTask)
+  // update current list under current group tag
+  handleTagSelected(tagSelected.value!)
 }
 const updateTask = (taskUpdated: TaskUpdated) => {
-  const { id, state, updateTime, expectEndTime, expectStartTime } = taskUpdated
-  const taskIndex = findTaskIndexById(id)
-  const tasks = getItem()
-  const task = tasks[taskIndex]
-  let setting = {}
-  expectEndTime && Object.assign(setting, { expectEndTime })
-  expectStartTime && Object.assign(setting, { expectStartTime })
-  tasks[taskIndex] = {
-    ...task,
-    state,
-    updateTime,
-    ...setting
-  }
-
-  // save tasks in localStorage
-  setItem(tasks)
+  store.updateTask(taskUpdated)
   // update current list under current group tag
   handleTagSelected(tagSelected.value!)
 }

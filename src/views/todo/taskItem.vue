@@ -181,7 +181,6 @@ import {
 import useTaskGroups from '../../hooks/useTaskGroups'
 import { Tag } from './TaskGroup.vue'
 import GroupTag from './GroupTag.vue'
-import { id } from 'element-plus/es/locales.mjs'
 
 export type TaskState = 'done' | 'todo' | 'archive'
 export interface Task {
