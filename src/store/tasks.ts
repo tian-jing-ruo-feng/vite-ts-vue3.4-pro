@@ -1,88 +1,53 @@
 import { defineStore } from 'pinia'
-import { TASKS } from '../consts'
+import { TASK_GROUP_ALL_TAG, TASKS } from '../consts'
 import { type Task } from '../views/todo/taskItem.vue'
 import { type Tag } from '../views/todo/TaskGroup.vue'
 import useTodo from '../hooks/useTodo'
-const { getItem, setItem } = useTodo()
+
+const { setItem } = useTodo()
 
 type Tasks = Task[] | null
-// export const useTasksStore = defineStore('tasks ', {
-//   state: () => {
-//     return {
-//       tasks: ref<Tasks>(getItem())
-//     }
-//   },
-//   getters: {
-//     getTasksByGroupTag: (state) => {
-//       return (tag: Tag) =>
-//         state.tasks?.filter((task) => task.groupTag === tag.id)
-//     },
-//     getTaskById: (state) => {
-//       return (id: Task['id']) =>
-//         state.tasks?.filter((task) => task.id === id)[0]
-//     }
-//   },
-//   actions: {
-//     addTask(task: Task) {
-//       this.tasks?.push(task)
-//       setItem(this.tasks)
-//       return this.tasks
-//     },
-//     // update & delete
-//     updateTask(task: Partial<Task>) {
-//       this.tasks = this.tasks?.map((originTask) => {
-//         if (originTask.id === task.id) {
-//           return {
-//             ...originTask,
-//             ...task
-//           }
-//         } else {
-//           return originTask
-//         }
-//       })!
-//       setItem(this.tasks)
-//       return this.tasks
-//     }
-//   }
-// })
 
-export const useTasksStore = defineStore('tasks', () => {
-  // state
-  const tasks = ref<Tasks>([])
+export const useTasksStore = defineStore(TASKS, () => {
+	// state
+	const tasks = ref<Tasks>([])
 
-  // getters
-  const tasksByGroupTag = computed(
-    () => (tag: Tag) => tasks.value?.filter((task) => task.groupTag === tag.id)
-  )
-  const tasksById = computed(
-    () => (id: Task['id']) => tasks.value?.filter((task) => task.id === id)[0]
-  )
+	// getters
+	const tasksByGroupTag = computed(() => (tag: Tag) => {
+		if (tag.id === TASK_GROUP_ALL_TAG) {
+			return tasks.value
+		}
+		return tasks.value?.filter(task => task.groupTag === tag.id)
+	})
+	const tasksById = computed(
+		() => (id: Task['id']) => tasks.value?.filter(task => task.id === id)[0]
+	)
 
-  // actions
-  const addTask = (task: Task) => {
-    tasks.value?.push(task)
-    setItem(tasks.value)
-    return tasks
-  }
-  const updateTask = (task: Partial<Task>) => {
-    tasks.value = tasks.value?.map((originTask) => {
-      if (originTask.id === task.id) {
-        return {
-          ...originTask,
-          ...task
-        }
-      }
-      return originTask
-    })!
-    setItem(tasks.value)
-    return tasks
-  }
+	// actions
+	const addTask = (task: Task) => {
+		tasks.value?.push(task)
+		setItem(tasks.value)
+		return tasks
+	}
+	const updateTask = (task: Partial<Task>) => {
+		tasks.value = tasks.value?.map(originTask => {
+			if (originTask.id === task.id) {
+				return {
+					...originTask,
+					...task
+				}
+			}
+			return originTask
+		})!
+		setItem(tasks.value)
+		return tasks
+	}
 
-  return {
-    tasks,
-    tasksByGroupTag,
-    tasksById,
-    addTask,
-    updateTask
-  }
+	return {
+		tasks,
+		tasksByGroupTag,
+		tasksById,
+		addTask,
+		updateTask
+	}
 })
