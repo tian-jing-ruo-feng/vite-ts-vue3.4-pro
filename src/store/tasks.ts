@@ -1,16 +1,28 @@
 import { defineStore } from 'pinia'
 import { TASK_GROUP_ALL_TAG, TASKS } from '../consts'
-import { type Task } from '../views/todo/taskItem.vue'
-import { type Tag } from '../views/todo/TaskGroup.vue'
+import { type Tag } from './taskGroup'
 import useTodo from '../hooks/useTodo'
 
-const { setItem } = useTodo()
+const { setItem, getItem } = useTodo()
 
 type Tasks = Task[] | null
+export type TaskState = 'done' | 'todo' | 'archive'
+export interface Task {
+	name: string
+	html?: string
+	id: string
+	state?: TaskState
+	isRemoved?: boolean
+	groupTag?: Tag['id']
+	createTime?: string
+	updateTime?: string
+	expectStartTime?: string
+	expectEndTime?: string
+}
 
 export const useTasksStore = defineStore(TASKS, () => {
 	// state
-	const tasks = ref<Tasks>([])
+	const tasks = ref<Tasks>(getItem())
 
 	// getters
 	const tasksByGroupTag = computed(() => (tag: Tag) => {
