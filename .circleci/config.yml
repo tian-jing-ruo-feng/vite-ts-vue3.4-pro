@@ -10,7 +10,6 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - ${SSH_KEYS}
-      - logforsshkeys
       - run:
           name: log for ssh keys
           command: echo ${SSH_KEYS}
