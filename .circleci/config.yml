@@ -10,9 +10,10 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - ${SSH_KEYS}
-			- run
-					name: log for ssh keys
-				  command: echo ${SSH_KEYS}
+      - logforsshkeys
+      - run:
+          name: log for ssh keys
+          command: echo ${SSH_KEYS}
       - checkout
       # 使用node_modules缓存
       - restore_cache:
