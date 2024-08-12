@@ -9,7 +9,7 @@ jobs:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - ${SSH_KEYS}
+            - '${SSH_KEYS}'
       - run:
           name: log for ssh keys
           command: echo ${SSH_KEYS}
