@@ -9,9 +9,6 @@ jobs:
     steps:
       - add_ssh_keys:
         run: echo 'export fingerprints="${SSH_KEYS}"' >> $BASH_ENV
-      - run:
-          name: log for ssh keys
-          command: echo ${SSH_KEYS}
       - checkout
       # 使用node_modules缓存
       - restore_cache:
