@@ -8,7 +8,7 @@ jobs:
         - main
     steps:
       - add_ssh_keys:
-          fingerprints: echo ${SSH_KEYS}
+        run: echo 'export fingerprints="${SSH_KEYS}"' >> $BASH_ENV
       - run:
           name: log for ssh keys
           command: echo ${SSH_KEYS}
