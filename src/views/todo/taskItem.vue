@@ -1,5 +1,6 @@
 <template>
 	<li
+		ref="taskItemRef"
 		class="task-item"
 		:class="{
 			'task-todo': isTodo,
@@ -9,7 +10,7 @@
 		}"
 	>
 		<div class="tag-time-setting">
-			<GroupTag class="task-group-tag" :tag="tag" :key="task.id"></GroupTag>
+			<GroupTag :key="task.id" class="task-group-tag" :tag="tag"></GroupTag>
 			<div class="task-item-setting">
 				<div class="expect-start-time expect-time">
 					<!-- 预计开始时间： -->
@@ -75,13 +76,13 @@
 			</template>
 
 			<div
-				class="task-name"
 				ref="taskWrap"
+				class="task-name"
 				@mouseenter="handleMouseEnter"
 				@mouseleave="handleMouseLeave"
 			>
 				<span ref="taskName">
-					<span class="task-state" v-if="!isArchive">
+					<span v-if="!isArchive" class="task-state">
 						<el-switch
 							v-model="taskState"
 							inline-prompt
@@ -112,9 +113,9 @@
 				</template>
 				<el-button
 					ref="buttonRef"
-					@click="copy(task.name)"
 					size="small"
 					class="copy-text"
+					@click="copy(task.name)"
 				>
 					<el-icon><ep-copy-document /></el-icon>
 				</el-button>
@@ -154,13 +155,23 @@
 
 		<p class="extro-info">
 			<span class="create-time">创建于：{{ task.createTime }}</span>
-			<span class="update-time" v-if="task.updateTime">
+			<span v-if="task.updateTime" class="update-time">
 				更新于：{{ task.updateTime }}</span
 			>
-			<span class="consumed-time" v-if="task.updateTime">
+			<span v-if="task.updateTime" class="consumed-time">
 				耗时：{{ dayjs(task.createTime).to(task.updateTime) }}</span
 			>
 		</p>
+
+		<!-- contextmenu -->
+		<context-menu
+			v-if="showContextMenu"
+			ref="contextMenuRef"
+			class="task-context-menu"
+			:style="contextMenuStyle"
+			:menu-contexts="menus"
+			@menu-click="showContextMenu = false"
+		></context-menu>
 	</li>
 </template>
 
@@ -168,10 +179,8 @@
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn'
 import dayjs from 'dayjs'
-dayjs.locale('zh-cn')
-dayjs.extend(relativeTime)
 import { Finished, Timer, VideoPause, VideoPlay } from '@element-plus/icons-vue'
-import { useClipboard } from '@vueuse/core'
+import { useClipboard, onClickOutside } from '@vueuse/core'
 import {
 	DATE_FORMAT,
 	TASKS_ARCHIVE,
@@ -180,6 +189,12 @@ import {
 } from '../../consts'
 import { type Tag, useTaskGroupStore } from '../../store/taskGroup'
 import GroupTag from './GroupTag.vue'
+import ContextMenu, {
+	type MenuContexts
+} from '../../components/ContextMenu.vue'
+
+dayjs.locale('zh-cn')
+dayjs.extend(relativeTime)
 
 export type TaskState = 'done' | 'todo' | 'archive'
 export interface Task {
@@ -229,10 +244,16 @@ const emit = defineEmits<{
 const taskGroupStore = useTaskGroupStore()
 const { tags } = storeToRefs(taskGroupStore)
 const { copy, copied } = useClipboard()
+const showContextMenu = ref(false)
+const contextMenuStyle = ref({
+	left: '0px',
+	top: '0px'
+})
 const taskWrap = ref<HTMLElement>()
 const taskName = ref<HTMLElement>()
 const buttonRef = ref()
-const popoverRef = ref()
+const taskItemRef = ref<HTMLElement>()
+const contextMenuRef = ref<HTMLElement>()
 const visible = ref(false)
 const visibleComputed = ref(false)
 const taskState = ref<TaskState>(TASKS_TODO)
@@ -247,13 +268,29 @@ const canRemove = computed(
 )
 const tooltipVisible = computed(() => visibleComputed.value && visible.value)
 const tag = computed(() => {
-	const group = tags.value.filter(tag => tag.id === props.task.groupTag)
+	const group = tags.value.filter(_tag => _tag.id === props.task.groupTag)
 	if (group?.length) {
 		return group[0]
-	} else {
-		return null
 	}
+	return null
 })
+const menus = ref<MenuContexts>([
+	{
+		contextName: '归档',
+		disabled: isArchive.value,
+		callback: () =>
+			emit('changeTaskState', {
+				state: TASKS_ARCHIVE,
+				id: props.task.id,
+				updateTime: dayjs().format(DATE_FORMAT)
+			})
+	},
+	{
+		contextName: '删除',
+		disabled: !isTodo.value,
+		callback: () => emit('deleteTask', props.task.id)
+	}
+])
 
 const handleMouseEnter = () => {
 	if (visible.value) {
@@ -287,11 +324,22 @@ const handleArchive = (task: Task) => {
 	})
 }
 
+onClickOutside(contextMenuRef, () => {
+	showContextMenu.value = false
+})
 onBeforeMount(() => {
 	taskState.value = props.task.state as TaskState
 	expectStartTime.value = props.task.expectStartTime!
 	expectEndTime.value = props.task.expectEndTime!
 })
+const handleContextMenuEvent = (e: MouseEvent) => {
+	e.preventDefault()
+	contextMenuStyle.value = {
+		left: `${e.offsetX + 20}px`,
+		top: `${e.offsetY + 10}px`
+	}
+	showContextMenu.value = true
+}
 onMounted(() => {
 	const wrapWidth = taskWrap.value?.offsetWidth as number
 	const taskWidth = taskName.value?.offsetWidth as number
@@ -300,6 +348,11 @@ onMounted(() => {
 	} else {
 		visible.value = false
 	}
+
+	taskItemRef.value!.addEventListener('contextmenu', handleContextMenuEvent)
+})
+onBeforeUnmount(() => {
+	taskItemRef.value!.removeEventListener('contextmenu', handleContextMenuEvent)
 })
 </script>
 
@@ -406,6 +459,12 @@ onMounted(() => {
 		}
 	}
 }
+
+.task-context-menu {
+	position: absolute;
+	z-index: 999;
+}
+
 .task-todo {
 	border-left: 4px solid $state-todo;
 }
