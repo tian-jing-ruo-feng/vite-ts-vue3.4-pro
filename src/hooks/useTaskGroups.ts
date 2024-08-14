@@ -1,5 +1,5 @@
 import { TASK_GROUPS } from '../consts'
-import { type Tag as Group } from '../views/todo/TaskGroup.vue'
+import { Tag as Group } from '../store/taskGroup'
 
 type TaskGroups = Group[] | []
 
