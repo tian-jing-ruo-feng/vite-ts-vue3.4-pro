@@ -162,16 +162,6 @@
 				耗时：{{ dayjs(task.createTime).to(task.updateTime) }}</span
 			>
 		</p>
-
-		<!-- contextmenu -->
-		<context-menu
-			v-if="showContextMenu"
-			ref="contextMenuRef"
-			class="task-context-menu"
-			:style="contextMenuStyle"
-			:menu-contexts="menus"
-			@menu-click="showContextMenu = false"
-		></context-menu>
 	</li>
 </template>
 
@@ -180,7 +170,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/zh-cn'
 import dayjs from 'dayjs'
 import { Finished, Timer, VideoPause, VideoPlay } from '@element-plus/icons-vue'
-import { useClipboard, onClickOutside } from '@vueuse/core'
+import { useClipboard } from '@vueuse/core'
 import {
 	DATE_FORMAT,
 	TASKS_ARCHIVE,
@@ -189,9 +179,6 @@ import {
 } from '../../consts'
 import { type Tag, useTaskGroupStore } from '../../store/taskGroup'
 import GroupTag from './GroupTag.vue'
-import ContextMenu, {
-	type MenuContexts
-} from '../../components/ContextMenu.vue'
 
 dayjs.locale('zh-cn')
 dayjs.extend(relativeTime)
@@ -244,16 +231,10 @@ const emit = defineEmits<{
 const taskGroupStore = useTaskGroupStore()
 const { tags } = storeToRefs(taskGroupStore)
 const { copy, copied } = useClipboard()
-const showContextMenu = ref(false)
-const contextMenuStyle = ref({
-	left: '0px',
-	top: '0px'
-})
 const taskWrap = ref<HTMLElement>()
 const taskName = ref<HTMLElement>()
 const buttonRef = ref()
 const taskItemRef = ref<HTMLElement>()
-const contextMenuRef = ref<HTMLElement>()
 const visible = ref(false)
 const visibleComputed = ref(false)
 const taskState = ref<TaskState>(TASKS_TODO)
@@ -274,23 +255,6 @@ const tag = computed(() => {
 	}
 	return null
 })
-const menus = ref<MenuContexts>([
-	{
-		contextName: '归档',
-		disabled: isArchive.value,
-		callback: () =>
-			emit('changeTaskState', {
-				state: TASKS_ARCHIVE,
-				id: props.task.id,
-				updateTime: dayjs().format(DATE_FORMAT)
-			})
-	},
-	{
-		contextName: '删除',
-		disabled: !isTodo.value,
-		callback: () => emit('deleteTask', props.task.id)
-	}
-])
 
 const handleMouseEnter = () => {
 	if (visible.value) {
@@ -324,22 +288,11 @@ const handleArchive = (task: Task) => {
 	})
 }
 
-onClickOutside(contextMenuRef, () => {
-	showContextMenu.value = false
-})
 onBeforeMount(() => {
 	taskState.value = props.task.state as TaskState
 	expectStartTime.value = props.task.expectStartTime!
 	expectEndTime.value = props.task.expectEndTime!
 })
-const handleContextMenuEvent = (e: MouseEvent) => {
-	e.preventDefault()
-	contextMenuStyle.value = {
-		left: `${e.offsetX + 20}px`,
-		top: `${e.offsetY + 10}px`
-	}
-	showContextMenu.value = true
-}
 onMounted(() => {
 	const wrapWidth = taskWrap.value?.offsetWidth as number
 	const taskWidth = taskName.value?.offsetWidth as number
@@ -348,11 +301,6 @@ onMounted(() => {
 	} else {
 		visible.value = false
 	}
-
-	taskItemRef.value!.addEventListener('contextmenu', handleContextMenuEvent)
-})
-onBeforeUnmount(() => {
-	taskItemRef.value!.removeEventListener('contextmenu', handleContextMenuEvent)
 })
 </script>
 

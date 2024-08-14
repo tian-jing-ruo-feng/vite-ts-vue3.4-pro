@@ -1,9 +1,7 @@
 <template>
 	<ul class="context-menu">
 		<li
-			v-for="(
-				{ contextName, disabled, classList, callback }, ind
-			) in menuContexts"
+			v-for="({ contextName, disabled, callback }, ind) in menuContexts"
 			:key="`menu-context-item-${ind}`"
 			class="menu-item"
 		>
