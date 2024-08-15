@@ -13,6 +13,7 @@
 
 <script setup lang="ts">
 import { Tag } from '../../store/taskGroup'
+
 interface Props {
 	tag: Partial<Tag> | null
 }

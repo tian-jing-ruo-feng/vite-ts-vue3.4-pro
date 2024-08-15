@@ -68,6 +68,7 @@ import taskItem, {
 	EditTaskType
 } from './taskItem.vue'
 import ContextMenu, { MenuContexts } from '../../components/ContextMenu.vue'
+import PriorityList, { Priority } from '../../components/PriorityList.vue'
 
 export type TasksArr = Task[]
 interface Props {
@@ -148,6 +149,19 @@ const useContextMenu = () => {
 				contextName: '置顶',
 				disabled: !isTodo,
 				callback: () => emit('toTop', task)
+			},
+			{
+				contextName: '优先级',
+				disabled: !isTodo,
+				task,
+				template: PriorityList,
+				callback: (priority: Priority) => {
+					emit('update', {
+						...updateTask,
+						state: TASKS_TODO,
+						priority
+					})
+				}
 			},
 			{
 				contextName: '删除',
