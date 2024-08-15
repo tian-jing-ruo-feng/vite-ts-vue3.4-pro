@@ -21,6 +21,7 @@
 				:is="template"
 				v-else
 				:priority="task!.priority"
+				:disabled="disabled"
 				@priority-check="(priority: Priority) => handleMenuItemClick(() => callback(priority))"
 			></component>
 		</li>

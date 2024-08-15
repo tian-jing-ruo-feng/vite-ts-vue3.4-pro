@@ -2,7 +2,7 @@
 	<div class="priority-list">
 		<el-popover placement="right" :teleported="false" trigger="click">
 			<template #reference>
-				<el-button text>优先级</el-button>
+				<el-button text :disabled="disabled">优先级</el-button>
 			</template>
 			<ul class="priority-options">
 				<li
@@ -36,6 +36,7 @@ export interface Priority {
 }
 type Props = {
 	priority: Priority
+	disabled?: boolean
 }
 
 defineOptions({
