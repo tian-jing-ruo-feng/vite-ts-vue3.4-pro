@@ -41,6 +41,7 @@
 				@edit="editTask"
 				@remove="removeTask"
 				@update="updateTask"
+				@to-top="topTask"
 			></Tasks>
 		</el-scrollbar>
 	</div>
@@ -66,7 +67,7 @@ interface Form {
 const { getItem } = useTodo()
 const store = useTasksStore()
 const { tasks, tasksByGroupTag, tasksById } = storeToRefs(store)
-const { addTask: add, updateTask: update } = store
+const { addTask: add, updateTask: update, toTop } = store
 const mainContent = inject<Ref<HTMLElement>>('mainContent')
 const height = ref('60vh')
 
@@ -213,6 +214,8 @@ const useTask = () => {
 		update(taskUpdated)
 	}
 
+	const topTask = (task: Task) => toTop(task)
+
 	return {
 		formRef,
 		form,
@@ -221,7 +224,8 @@ const useTask = () => {
 		editTask,
 		addTask,
 		removeTask,
-		updateTask
+		updateTask,
+		topTask
 	}
 }
 
@@ -242,7 +246,8 @@ const {
 	editTask,
 	addTask,
 	removeTask,
-	updateTask
+	updateTask,
+	topTask
 } = useTask()
 
 onMounted(() => {

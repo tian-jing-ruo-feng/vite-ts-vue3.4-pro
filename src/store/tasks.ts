@@ -54,12 +54,20 @@ export const useTasksStore = defineStore(TASKS, () => {
 		setItem(tasks.value)
 		return tasks
 	}
+	const toTop = (task: Task) => {
+		const taskIndex = tasks.value?.findIndex(_task => _task.id === task.id)
+		tasks.value?.splice(taskIndex!, 1)
+		tasks.value?.unshift(task)
+		setItem(tasks.value)
+		return tasks
+	}
 
 	return {
 		tasks,
 		tasksByGroupTag,
 		tasksById,
 		addTask,
-		updateTask
+		updateTask,
+		toTop
 	}
 })

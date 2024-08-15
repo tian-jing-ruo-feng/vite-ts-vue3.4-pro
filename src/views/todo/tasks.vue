@@ -34,14 +34,6 @@
 						style="height: 50px; padding: 0"
 					/>
 				</div>
-				<!-- <context-menu
-					v-if="showContextMenu"
-					ref="contextMenuRef"
-					class="task-context-menu"
-					:style="contextMenuStyle"
-					:menu-contexts="menus"
-					@menu-click="showContextMenu = false"
-				></context-menu> -->
 			</el-collapse-item>
 		</el-collapse>
 
@@ -90,6 +82,7 @@ const emit = defineEmits<{
 	edit: [EditTaskType]
 	remove: [id: string]
 	update: [updateTask: TaskUpdated]
+	toTop: [task: Task]
 }>()
 
 type ST = {
@@ -150,6 +143,11 @@ const useContextMenu = () => {
 						state: TASKS_ARCHIVE,
 						...updateTask
 					})
+			},
+			{
+				contextName: '置顶',
+				disabled: !isTodo,
+				callback: () => emit('toTop', task)
 			},
 			{
 				contextName: '删除',
