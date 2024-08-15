@@ -2,23 +2,23 @@
 	<div class="todo">
 		<h2 class="title">TODO LIST</h2>
 		<task-group @select="handleTagSelected"></task-group>
-		<div class="add-area" v-if="false">
+		<div v-if="false" class="add-area">
 			<el-form
+				ref="formRef"
 				:inline="true"
 				:model="form"
 				:rules="rules"
 				hide-required-asterisk
-				ref="formRef"
 				class="demo-form-inline"
 				@submit.prevent
 			>
 				<el-form-item label="添加任务：" prop="task">
 					<el-input
-						type="textarea"
 						ref="inputTask"
+						v-model.trim="form.task"
+						type="textarea"
 						class="input-task"
 						clearable
-						v-model.trim="form.task"
 						@keyup.enter="addTask"
 					></el-input>
 					<el-button class="add-button" @click="addTask">
@@ -41,142 +41,214 @@
 				@edit="editTask"
 				@remove="removeTask"
 				@update="updateTask"
+				@to-top="topTask"
 			></Tasks>
 		</el-scrollbar>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { FormInstance, FormRules } from 'element-plus'
-import { v4 as uuidv4 } from 'uuid'
 import dayjs from 'dayjs'
-import { DATE_FORMAT, TASKS_TODO } from '../../consts'
+import { v4 as uuidv4 } from 'uuid'
+import { FormInstance, FormRules } from 'element-plus'
 import Tasks from './tasks.vue'
-import { EditTaskType, type Task, type TaskUpdated } from './taskItem.vue'
-import TaskGroup, { type Tag } from './TaskGroup.vue'
+import TaskGroup from './TaskGroup.vue'
+import { Tag } from '../../store/taskGroup'
 import Editor, { ConfirmEventArgType } from './Editor.vue'
+import { EditTaskType, type Task, type TaskUpdated } from './taskItem.vue'
 import useTodo from '../../hooks/useTodo'
 import { useTasksStore } from '../../store/tasks'
-const { getItem, setItem } = useTodo()
-const store = useTasksStore()
-const { tasks, tasksByGroupTag, tasksById } = storeToRefs(store)
-const { addTask: add, updateTask: update } = store
+import { DATE_FORMAT, TASKS_TODO } from '../../consts'
 
 interface Form {
 	task: string
 }
 
+const { getItem } = useTodo()
+const store = useTasksStore()
+const { tasks, tasksByGroupTag, tasksById } = storeToRefs(store)
+const { addTask: add, updateTask: update, toTop } = store
 const mainContent = inject<Ref<HTMLElement>>('mainContent')
-const tagSelected = ref<Tag>({
-	id: 'all',
-	name: '全部',
-	checked: true,
-	edited: false,
-	color: '',
-	isDeleted: false
-})
-const inputTask = ref<HTMLInputElement>()
 const height = ref('60vh')
-const formRef = ref<FormInstance>()
-const editContent = ref('')
-const currentEditId = ref('')
-const currentEditTask = ref<Task | null>()
-const form: Form = reactive({
-	task: ''
-})
-const tasksUnderTag = computed(() => tasksByGroupTag.value(tagSelected.value!))
 
-const validateTask = (rule: any, value: string, callback: any) => {
-	if (value === '') {
-		callback(new Error('请输入内容！'))
-	} else {
-		callback()
+// task group
+const useTaskGroup = () => {
+	const tagSelected = ref<Tag>({
+		id: 'all',
+		name: '全部',
+		checked: true,
+		edited: false,
+		color: '',
+		isDeleted: false
+	})
+
+	const handleTagSelected = (tag: Tag) => {
+		tagSelected.value = tag
+	}
+
+	return {
+		tagSelected,
+		handleTagSelected
 	}
 }
-const rules = reactive<FormRules<typeof form>>({
-	task: {
-		required: true,
-		validator: validateTask,
-		trigger: 'change'
-	}
-})
 
-const findTaskIndexById = (id: string) =>
-	getItem().findIndex((task: Task) => task.id === id)
-const addTask = () => {
-	formRef.value?.validate(isValid => {
-		if (isValid) {
-			const task: Task = {
-				name: form.task,
+// Editor
+const useEditor = () => {
+	const inputTask = ref<HTMLInputElement>()
+	const editContent = ref('')
+	const currentEditId = ref('')
+	const currentEditTask = ref<Task | null>()
+
+	// clear current task edited
+	const clearCurrentEditTask = () => {
+		currentEditId.value = ''
+		currentEditTask.value = null
+	}
+
+	const handleEditorCancel = () => {
+		editContent.value = ''
+		clearCurrentEditTask()
+	}
+
+	const handleEditorConfirm = (args: ConfirmEventArgType) => {
+		const { text, html } = args
+		if (currentEditId.value) {
+			// edit a task
+			const editedTask = tasks.value?.find(
+				task => task.id === currentEditId.value
+			)!
+			update({
+				...editedTask,
+				html,
+				name: text,
+				updateTime: dayjs().format(DATE_FORMAT)
+			})
+			clearCurrentEditTask()
+		} else {
+			// add a new task
+			add({
+				name: text,
+				html,
 				id: uuidv4(),
 				state: TASKS_TODO,
 				groupTag: tagSelected.value?.id || 'all',
 				createTime: dayjs().format(DATE_FORMAT)
-			}
-			add(task)
-			form.task = ''
-			formRef.value?.resetFields()
+			})
+		}
+	}
+
+	return {
+		inputTask,
+		editContent,
+		currentEditId,
+		currentEditTask,
+		handleEditorCancel,
+		handleEditorConfirm
+	}
+}
+
+// task list
+const useTask = () => {
+	const formRef = ref<FormInstance>()
+	const form: Form = reactive({
+		task: ''
+	})
+	const tasksUnderTag = computed(() =>
+		tasksByGroupTag.value(tagSelected.value!)
+	)
+
+	const validateTask = (rule: any, value: string, callback: any) => {
+		if (value === '') {
+			callback(new Error('请输入内容！'))
+		} else {
+			callback()
+		}
+	}
+	const rules = reactive<FormRules<typeof form>>({
+		task: {
+			required: true,
+			validator: validateTask,
+			trigger: 'change'
 		}
 	})
-}
-const editTask = (args: EditTaskType) => {
-	const { html, id } = args
-	currentEditId.value = id
-	// record current edit task & index
-	const taskIndex = findTaskIndexById(id)
-	currentEditTask.value = tasks.value![taskIndex]
-	// render task html in eidtor
-	editContent.value = html
-	mainContent?.value.scrollTo(0, 0)
-}
-const removeTask = (id: string) => {
-	const updateTask = {
-		...tasksById.value(id),
-		isRemoved: true
+
+	const findTaskIndexById = (id: string) =>
+		getItem().findIndex((task: Task) => task.id === id)
+	const editTask = (args: EditTaskType) => {
+		const { html, id } = args
+		currentEditId.value = id
+		// record current edit task & index
+		const taskIndex = findTaskIndexById(id)
+		currentEditTask.value = tasks.value![taskIndex]
+		// render task html in eidtor
+		editContent.value = html
+		mainContent?.value.scrollTo(0, 0)
 	}
-	update(updateTask)
-}
-const updateTask = (taskUpdated: TaskUpdated) => {
-	update(taskUpdated)
-}
-const handleTagSelected = (tag: Tag) => {
-	tagSelected.value = tag
-}
-// clear current task edited
-const clearCurrentEditTask = () => {
-	currentEditId.value = ''
-	currentEditTask.value = null
-}
-const handleEditorCancel = () => {
-	editContent.value = ''
-	clearCurrentEditTask()
-}
-const handleEditorConfirm = (args: ConfirmEventArgType) => {
-	const { text, html } = args
-	if (currentEditId.value) {
-		// edit a task
-		const editedTask = tasks.value?.find(
-			task => task.id === currentEditId.value
-		)!
-		update({
-			...editedTask,
-			html,
-			name: text,
-			updateTime: dayjs().format(DATE_FORMAT)
-		})
-		clearCurrentEditTask()
-	} else {
-		// add a new task
-		add({
-			name: text,
-			html: html,
-			id: uuidv4(),
-			state: TASKS_TODO,
-			groupTag: tagSelected.value?.id || 'all',
-			createTime: dayjs().format(DATE_FORMAT)
+
+	const addTask = () => {
+		formRef.value?.validate(isValid => {
+			if (isValid) {
+				const task: Task = {
+					name: form.task,
+					id: uuidv4(),
+					state: TASKS_TODO,
+					groupTag: tagSelected.value?.id || 'all',
+					createTime: dayjs().format(DATE_FORMAT)
+				}
+				add(task)
+				form.task = ''
+				formRef.value?.resetFields()
+			}
 		})
 	}
+
+	const removeTask = (id: string) => {
+		const updateTask = {
+			...tasksById.value(id),
+			isRemoved: true
+		}
+		update(updateTask)
+	}
+
+	const updateTask = (taskUpdated: TaskUpdated) => {
+		update(taskUpdated)
+	}
+
+	const topTask = (task: Task) => toTop(task)
+
+	return {
+		formRef,
+		form,
+		tasksUnderTag,
+		rules,
+		editTask,
+		addTask,
+		removeTask,
+		updateTask,
+		topTask
+	}
 }
+
+const { tagSelected, handleTagSelected } = useTaskGroup()
+const {
+	inputTask,
+	editContent,
+	currentEditId,
+	currentEditTask,
+	handleEditorCancel,
+	handleEditorConfirm
+} = useEditor()
+const {
+	formRef,
+	form,
+	rules,
+	tasksUnderTag,
+	editTask,
+	addTask,
+	removeTask,
+	updateTask,
+	topTask
+} = useTask()
 
 onMounted(() => {
 	tasks.value = getItem()

@@ -11,6 +11,11 @@
 	>
 		<div class="tag-time-setting">
 			<GroupTag :key="task.id" class="task-group-tag" :tag="tag"></GroupTag>
+			<GroupPriority
+				v-if="task.priority?.checked"
+				class="task-group-priority"
+				:priority="task.priority"
+			></GroupPriority>
 			<div class="task-item-setting">
 				<div class="expect-start-time expect-time">
 					<!-- 预计开始时间： -->
@@ -179,6 +184,8 @@ import {
 } from '../../consts'
 import { type Tag, useTaskGroupStore } from '../../store/taskGroup'
 import GroupTag from './GroupTag.vue'
+import { Priority } from '../../components/PriorityList.vue'
+import GroupPriority from './GroupPriority.vue'
 
 dayjs.locale('zh-cn')
 dayjs.extend(relativeTime)
@@ -195,6 +202,7 @@ export interface Task {
 	updateTime?: string
 	expectStartTime?: string
 	expectEndTime?: string
+	priority?: Priority
 }
 export interface TaskUpdated {
 	state: TaskState
@@ -202,6 +210,7 @@ export interface TaskUpdated {
 	updateTime: string
 	expectStartTime?: string
 	expectEndTime?: string
+	priority?: Priority
 }
 export interface EditTaskType {
 	html: string
@@ -343,6 +352,15 @@ onMounted(() => {
 		position: relative;
 		width: 100%;
 		margin-bottom: 10px;
+
+		.task-group-priority,
+		.task-group-tag {
+			display: inline-block;
+		}
+
+		.task-group-tag {
+			margin-right: 20px;
+		}
 		.task-item-setting {
 			position: absolute;
 			right: 0;

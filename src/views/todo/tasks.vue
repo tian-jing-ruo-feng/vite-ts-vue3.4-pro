@@ -34,14 +34,6 @@
 						style="height: 50px; padding: 0"
 					/>
 				</div>
-				<!-- <context-menu
-					v-if="showContextMenu"
-					ref="contextMenuRef"
-					class="task-context-menu"
-					:style="contextMenuStyle"
-					:menu-contexts="menus"
-					@menu-click="showContextMenu = false"
-				></context-menu> -->
 			</el-collapse-item>
 		</el-collapse>
 
@@ -76,6 +68,7 @@ import taskItem, {
 	EditTaskType
 } from './taskItem.vue'
 import ContextMenu, { MenuContexts } from '../../components/ContextMenu.vue'
+import PriorityList, { Priority } from '../../components/PriorityList.vue'
 
 export type TasksArr = Task[]
 interface Props {
@@ -90,6 +83,7 @@ const emit = defineEmits<{
 	edit: [EditTaskType]
 	remove: [id: string]
 	update: [updateTask: TaskUpdated]
+	toTop: [task: Task]
 }>()
 
 type ST = {
@@ -150,6 +144,24 @@ const useContextMenu = () => {
 						state: TASKS_ARCHIVE,
 						...updateTask
 					})
+			},
+			{
+				contextName: '置顶',
+				disabled: !isTodo,
+				callback: () => emit('toTop', task)
+			},
+			{
+				contextName: '优先级',
+				disabled: !isTodo,
+				task,
+				template: PriorityList,
+				callback: (priority: Priority) => {
+					emit('update', {
+						...updateTask,
+						state: TASKS_TODO,
+						priority
+					})
+				}
 			},
 			{
 				contextName: '删除',

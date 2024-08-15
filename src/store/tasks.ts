@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { TASK_GROUP_ALL_TAG, TASKS } from '../consts'
 import { type Tag } from './taskGroup'
 import useTodo from '../hooks/useTodo'
+import { Priority } from '../components/PriorityList.vue'
 
 const { setItem, getItem } = useTodo()
 
@@ -18,6 +19,7 @@ export interface Task {
 	updateTime?: string
 	expectStartTime?: string
 	expectEndTime?: string
+	priority?: Priority
 }
 
 export const useTasksStore = defineStore(TASKS, () => {
@@ -54,12 +56,20 @@ export const useTasksStore = defineStore(TASKS, () => {
 		setItem(tasks.value)
 		return tasks
 	}
+	const toTop = (task: Task) => {
+		const taskIndex = tasks.value?.findIndex(_task => _task.id === task.id)
+		tasks.value?.splice(taskIndex!, 1)
+		tasks.value?.unshift(task)
+		setItem(tasks.value)
+		return tasks
+	}
 
 	return {
 		tasks,
 		tasksByGroupTag,
 		tasksById,
 		addTask,
-		updateTask
+		updateTask,
+		toTop
 	}
 })

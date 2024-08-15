@@ -1,11 +1,15 @@
+<!-- eslint-disable vue/no-v-html -->
 <template>
 	<ul class="context-menu">
 		<li
-			v-for="({ contextName, disabled, callback }, ind) in menuContexts"
+			v-for="(
+				{ contextName, disabled, template, callback, task }, ind
+			) in menuContexts"
 			:key="`menu-context-item-${ind}`"
 			class="menu-item"
 		>
 			<el-button
+				v-if="!template"
 				:disabled="disabled"
 				text
 				plain
@@ -13,17 +17,29 @@
 			>
 				{{ contextName }}</el-button
 			>
+			<component
+				:is="template"
+				v-else
+				:priority="task!.priority"
+				@priority-check="(priority: Priority) => handleMenuItemClick(() => callback(priority))"
+			></component>
 		</li>
 	</ul>
 </template>
 
 <script setup lang="ts">
+import { type Component } from 'vue'
+import { Priority } from './PriorityList.vue'
+import { Task } from '../store/tasks'
+
 export interface MenuContextItem {
 	// label, callback
 	contextName: string
-	callback: () => void
+	callback: (...args: any) => void
 	disabled?: boolean
+	template?: string | Component
 	classList?: string[] | string
+	task?: Task
 }
 export type MenuContexts = MenuContextItem[]
 type Props = {
@@ -41,7 +57,7 @@ withDefaults(defineProps<Props>(), {
 })
 const emit = defineEmits(['menu-click'])
 
-const handleMenuItemClick = (callback: () => void) => {
+const handleMenuItemClick = (callback: MenuContextItem['callback']) => {
 	callback()
 	emit('menu-click')
 }
