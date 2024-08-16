@@ -156,11 +156,15 @@ const useContextMenu = () => {
 				task,
 				template: shallowRef(PriorityList),
 				callback: (priority: Priority) => {
-					emit('update', {
-						...updateTask,
-						state: TASKS_TODO,
-						priority
-					})
+					if (priority.checked) {
+						emit('update', {
+							...updateTask,
+							state: TASKS_TODO,
+							priority
+						})
+					} else {
+						emit('update', { ...updateTask, state: TASKS_TODO, priority: null })
+					}
 				}
 			},
 			{

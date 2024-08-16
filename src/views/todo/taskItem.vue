@@ -210,7 +210,7 @@ export interface TaskUpdated {
 	updateTime: string
 	expectStartTime?: string
 	expectEndTime?: string
-	priority?: Priority
+	priority?: Priority | null
 }
 export interface EditTaskType {
 	html: string
