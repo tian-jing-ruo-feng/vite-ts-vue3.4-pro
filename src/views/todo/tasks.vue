@@ -154,7 +154,7 @@ const useContextMenu = () => {
 				contextName: '优先级',
 				disabled: !isTodo,
 				task,
-				template: PriorityList,
+				template: shallowRef(PriorityList),
 				callback: (priority: Priority) => {
 					emit('update', {
 						...updateTask,
