@@ -35,7 +35,7 @@ export interface Priority {
 	value: number
 }
 type Props = {
-	priority: Priority
+	priority?: Priority
 	disabled?: boolean
 }
 
@@ -74,11 +74,11 @@ const handlePriorityItemClick = (priority: Priority, ind: number) => {
 const init = () => {
 	if (props.priority) {
 		priorityList.value = priorityList.value.map(_p => {
-			if (_p.value === props.priority.value) {
+			if (_p.value === props.priority!.value) {
 				return props.priority
 			}
 			return _p
-		})
+		}) as typeof list
 	}
 }
 onMounted(() => {
