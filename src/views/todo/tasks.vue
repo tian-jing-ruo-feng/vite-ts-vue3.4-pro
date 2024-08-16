@@ -2,7 +2,7 @@
 	<div class="tasks">
 		<el-collapse v-if="tasks?.length" v-model="activeNames">
 			<el-collapse-item
-				v-for="(state, stateInd) in Object.keys(TaskStates)"
+				v-for="(state, stateInd) in taskStatesArr"
 				:key="state"
 				class="task-collapse-item"
 				:class="[`task-collapse-${state}`]"
@@ -94,7 +94,9 @@ const TaskStates: ST = {
 	[TASKS_DONE]: '完成任务',
 	[TASKS_ARCHIVE]: '归档任务'
 }
-const activeNames = ref(TASKS_TODO)
+// ['todo', 'done', 'archive']
+const taskStatesArr = Object.keys(TaskStates)
+const activeNames = ref([TASKS_TODO])
 
 const useContextMenu = () => {
 	const showContextMenu = ref(false)
@@ -117,11 +119,15 @@ const useContextMenu = () => {
 			let h = 0
 			if (stateInd) {
 				for (let index = 0; index < stateInd; index++) {
-					h +=
-						getTasksNotDeleted(Object.keys(TaskStates)[index] as TaskState)
-							.length *
-							130 +
-						74
+					const isCollapse = activeNames.value.includes(taskStatesArr[index])
+					if (isCollapse) {
+						h +=
+							getTasksNotDeleted(taskStatesArr[index] as TaskState).length *
+								130 +
+							74
+					} else {
+						h += 74
+					}
 				}
 			}
 			return h

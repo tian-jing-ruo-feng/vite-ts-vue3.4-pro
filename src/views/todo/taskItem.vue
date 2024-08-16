@@ -372,6 +372,8 @@ onMounted(() => {
 	.task-name {
 		width: calc(100% - 200px);
 		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 
 		.task-state,
 		.task-name-content {
