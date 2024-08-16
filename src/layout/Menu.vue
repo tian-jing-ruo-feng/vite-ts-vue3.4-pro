@@ -35,15 +35,18 @@ const handleSelect = (key: string, keyPath?: string[]) => {
 	$router.push(`/${active.value}`)
 }
 const handleLoad = () => {
-	console.log($route)
-	console.log(active.value)
 	handleSelect($route.fullPath)
 }
+
+onBeforeRouteUpdate(to => {
+	active.value = to.name
+})
+
 onMounted(() => {
-	window.addEventListener('beforeunload', handleLoad)
+	window.addEventListener('onunload', handleLoad)
 })
 onBeforeMount(() => {
-	window.removeEventListener('beforeunload', handleLoad)
+	window.removeEventListener('onunload', handleLoad)
 })
 </script>
 

@@ -5,6 +5,16 @@
 				<ul class="project-info">
 					<li>项目: {{ name }}@{{ version }}</li>
 					<li class="vue-version">Vue版本：Vue{{ VueVersion }}</li>
+					<li class="doc">
+						<router-link v-slot="{ navigate }" custom :to="{ path: '/readme' }">
+							<div @click="navigate">
+								<span class="doc-label">说明文档</span>
+								<el-icon style="vertical-align: middle" color="#67C23A">
+									<FaBook></FaBook>
+								</el-icon>
+							</div>
+						</router-link>
+					</li>
 				</ul>
 			</el-header>
 			<el-main class="main">
@@ -34,6 +44,7 @@ provide('mainContent', contentRef)
 .home {
 	display: flex;
 	.header {
+		position: relative;
 		.project-info {
 			display: flex;
 			line-height: var(--el-header-height);
@@ -46,6 +57,16 @@ provide('mainContent', contentRef)
 
 			.vue-version {
 				color: #42b883;
+			}
+
+			.doc {
+				position: absolute;
+				right: 40px;
+				cursor: pointer;
+				.doc-label {
+					font-size: 16px;
+					margin-right: 10px;
+				}
 			}
 		}
 	}

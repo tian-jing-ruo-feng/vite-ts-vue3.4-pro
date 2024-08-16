@@ -44,6 +44,7 @@
 		"unplugin-icons": "^0.19.0",
 		"unplugin-vue-components": "^0.27.3",
 		"vite": "^5.3.4",
+		"vite-plugin-markdown": "^2.2.0",
 		"vue-eslint-parser": "^9.1.1",
 		"vue-tsc": "^2.0.24"
 	}

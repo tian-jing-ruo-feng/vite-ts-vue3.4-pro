@@ -40,6 +40,11 @@ export const routes: RouteRecordRaw[] = [
 						component: () => import('../views/example/ES6.vue')
 					}
 				]
+			},
+			{
+				name: 'README',
+				path: 'readme',
+				component: () => import('../views/readme/index.vue')
 			}
 		]
 	},
