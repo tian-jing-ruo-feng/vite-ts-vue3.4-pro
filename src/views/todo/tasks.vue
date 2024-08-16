@@ -61,8 +61,8 @@ import {
 	TASKS_DONE,
 	TASKS_TODO
 } from '../../consts'
+import { Task } from '../../store/tasks'
 import taskItem, {
-	type Task,
 	type TaskUpdated,
 	type TaskState,
 	EditTaskType
@@ -135,6 +135,7 @@ const useContextMenu = () => {
 		const isArchive = state === TASKS_ARCHIVE
 		const isTodo = state === TASKS_TODO
 		const updateTask = { id, updateTime: dayjs().format(DATE_FORMAT) }
+		const topTitle = task.isTop ? '取消置顶' : '置顶'
 		menus.value = [
 			{
 				contextName: '归档',
@@ -146,9 +147,9 @@ const useContextMenu = () => {
 					})
 			},
 			{
-				contextName: '置顶',
+				contextName: topTitle,
 				disabled: !isTodo,
-				callback: () => emit('toTop', task)
+				callback: () => emit('toTop', { ...task, isTop: !task.isTop })
 			},
 			{
 				contextName: '优先级',
@@ -163,7 +164,11 @@ const useContextMenu = () => {
 							priority
 						})
 					} else {
-						emit('update', { ...updateTask, state: TASKS_TODO, priority: null })
+						emit('update', {
+							...updateTask,
+							state: TASKS_TODO,
+							priority: undefined
+						})
 					}
 				}
 			},

@@ -55,9 +55,9 @@ import Tasks from './tasks.vue'
 import TaskGroup from './TaskGroup.vue'
 import { Tag } from '../../store/taskGroup'
 import Editor, { ConfirmEventArgType } from './Editor.vue'
-import { EditTaskType, type Task, type TaskUpdated } from './taskItem.vue'
+import { Task, useTasksStore } from '../../store/tasks'
+import { EditTaskType, type TaskUpdated } from './taskItem.vue'
 import useTodo from '../../hooks/useTodo'
-import { useTasksStore } from '../../store/tasks'
 import { DATE_FORMAT, TASKS_TODO } from '../../consts'
 
 interface Form {

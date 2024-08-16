@@ -20,6 +20,7 @@ export interface Task {
 	expectStartTime?: string
 	expectEndTime?: string
 	priority?: Priority
+	isTop?: boolean // 是否置顶
 }
 
 export const useTasksStore = defineStore(TASKS, () => {
@@ -57,9 +58,21 @@ export const useTasksStore = defineStore(TASKS, () => {
 		return tasks
 	}
 	const toTop = (task: Task) => {
-		const taskIndex = tasks.value?.findIndex(_task => _task.id === task.id)
-		tasks.value?.splice(taskIndex!, 1)
-		tasks.value?.unshift(task)
+		if (tasks.value?.length) {
+			const taskIndex = tasks.value.findIndex(_task => _task.id === task.id)
+			if (task.isTop) {
+				// clear all task isTop prop
+				tasks.value = tasks.value.map(item => {
+					delete item.isTop
+					return item
+				})
+				tasks.value.splice(taskIndex!, 1)
+				tasks.value.unshift(task)
+			} else {
+				delete task.isTop
+				tasks.value[taskIndex] = task
+			}
+		}
 		setItem(tasks.value)
 		return tasks
 	}

@@ -6,7 +6,8 @@
 			'task-todo': isTodo,
 			'task-done': isDone,
 			'task-archive': isArchive,
-			'is-archive': isArchive
+			'is-archive': isArchive,
+			'is-top': task.isTop
 		}"
 	>
 		<div class="tag-time-setting">
@@ -182,35 +183,24 @@ import {
 	TASKS_DONE,
 	TASKS_TODO
 } from '../../consts'
-import { type Tag, useTaskGroupStore } from '../../store/taskGroup'
+import { useTaskGroupStore } from '../../store/taskGroup'
 import GroupTag from './GroupTag.vue'
 import { Priority } from '../../components/PriorityList.vue'
 import GroupPriority from './GroupPriority.vue'
+import { Task } from '../../store/tasks'
 
 dayjs.locale('zh-cn')
 dayjs.extend(relativeTime)
 
 export type TaskState = 'done' | 'todo' | 'archive'
-export interface Task {
-	name: string
-	html?: string
-	id: string
-	state?: TaskState
-	isRemoved?: boolean
-	groupTag?: Tag['id']
-	createTime?: string
-	updateTime?: string
-	expectStartTime?: string
-	expectEndTime?: string
-	priority?: Priority
-}
 export interface TaskUpdated {
 	state: TaskState
 	id: string
 	updateTime: string
 	expectStartTime?: string
 	expectEndTime?: string
-	priority?: Priority | null
+	priority?: Priority | undefined
+	isTop?: boolean // 是否置顶
 }
 export interface EditTaskType {
 	html: string
@@ -439,5 +429,8 @@ onMounted(() => {
 }
 .task-archive {
 	border-left: 4px solid $state-archive;
+}
+.is-top {
+	background-color: rgba($color: #ecf5ff, $alpha: 1);
 }
 </style>
