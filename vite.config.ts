@@ -22,7 +22,7 @@ export default defineConfig({
 			// Auto import [vue, vue-router, pinia] functions related
 			// example: functions from vue, ref, reactive, toRef
 			imports: ['vue', 'vue-router', 'pinia'],
-			include: [/\.[tj]sx?$/, /\.vue$/, /\.md$/],
+			include: [/\.[tj]sx?$/, /\.vue$/],
 			resolvers: [
 				ElementPlusResolver(),
 				// Auto import icon components
