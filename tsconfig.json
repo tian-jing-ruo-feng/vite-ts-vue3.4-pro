@@ -1,27 +1,27 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ],
-  "compilerOptions": {
-    "types": [
-      "element-plus/global",
-      "unplugin-icons/types/vue",
-      "vite/client",
-      "./auto-imports.d.ts"
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "lib": ["ESNext"],
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "target": "ES5"
-  }
+	"files": [],
+	"references": [
+		{
+			"path": "./tsconfig.app.json"
+		},
+		{
+			"path": "./tsconfig.node.json"
+		}
+	],
+	"compilerOptions": {
+		"types": [
+			"element-plus/global",
+			"unplugin-icons/types/vue",
+			"vite/client",
+			"./auto-imports.d.ts"
+		],
+		// "baseUrl": ".",
+		// "paths": {
+		//   "@/*": ["./src/*"]
+		// },
+		"lib": ["ESNext"],
+		"module": "ESNext",
+		"moduleResolution": "Node",
+		"target": "ES5"
+	}
 }
