@@ -81,9 +81,9 @@ export const useTasksStore = defineStore(TASKS, () => {
 		setItem(tasks.value)
 		return tasks
 	}
-	const searchTasks = (form: FormProps) => {
+	const searchTasks = (form: FormProps, resolveTasks: Tasks) => {
 		const format = 'YYYY-MM-DD'
-		const { createTime } = form
+		const { createTime = 'day' } = form
 		// filter task item createTime conform to timeRange
 		const conformToTimeRange = (task: Task) => {
 			const taskCreateTime = dayjs(task.createTime).format(format)
@@ -103,7 +103,7 @@ export const useTasksStore = defineStore(TASKS, () => {
 				)
 			}
 		}
-		tasks.value = getItem().filter(task => conformToTimeRange(task))
+		return resolveTasks!.filter(task => conformToTimeRange(task))
 	}
 
 	return {

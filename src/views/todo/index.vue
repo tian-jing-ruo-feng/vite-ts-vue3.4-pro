@@ -35,7 +35,7 @@
 		></Editor>
 		<!-- operation button intro -->
 		<el-divider> 任务列表 </el-divider>
-		<SearchForm @search="searchTasks"></SearchForm>
+		<SearchForm @search="handleSearchTasks"></SearchForm>
 		<el-scrollbar :height="height">
 			<Tasks
 				:tasks="tasksUnderTag!"
@@ -60,7 +60,7 @@ import { Task, useTasksStore } from '../../store/tasks'
 import { EditTaskType, type TaskUpdated } from './taskItem.vue'
 import useTodo from '../../hooks/useTodo'
 import { DATE_FORMAT, TASKS_TODO } from '../../consts'
-import SearchForm from './SearchForm.vue'
+import SearchForm, { FormProps } from './SearchForm.vue'
 
 interface Form {
 	task: string
@@ -156,7 +156,7 @@ const useTask = () => {
 		task: ''
 	})
 	const tasksUnderTag = computed(() =>
-		tasksByGroupTag.value(tagSelected.value!)
+		searchTasks(searchForm, tasksByGroupTag.value(tagSelected.value!)!)
 	)
 
 	const validateTask = (rule: any, value: string, callback: any) => {
@@ -231,6 +231,21 @@ const useTask = () => {
 	}
 }
 
+// search task
+const useSearchTasks = () => {
+	const searchForm: FormProps = reactive({
+		createTime: 'day'
+	})
+	const handleSearchTasks = (formBody: FormProps) => {
+		searchForm.createTime = formBody.createTime
+	}
+
+	return {
+		searchForm,
+		handleSearchTasks
+	}
+}
+
 const { tagSelected, handleTagSelected } = useTaskGroup()
 const {
 	inputTask,
@@ -251,6 +266,8 @@ const {
 	updateTask,
 	topTask
 } = useTask()
+
+const { searchForm, handleSearchTasks } = useSearchTasks()
 
 onMounted(() => {
 	tasks.value = getItem()
