@@ -69,6 +69,10 @@ const reset = () => {
 const search = () => {
 	emits('search', formInline)
 }
+
+onMounted(() => {
+	emits('search', formInline)
+})
 </script>
 
 <style lang="scss" scoped></style>
