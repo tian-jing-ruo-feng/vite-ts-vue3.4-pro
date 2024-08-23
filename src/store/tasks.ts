@@ -1,8 +1,13 @@
 import { defineStore } from 'pinia'
+import dayjs from 'dayjs'
+import isBetween from 'dayjs/plugin/isBetween'
 import { TASK_GROUP_ALL_TAG, TASKS } from '../consts'
 import { type Tag } from './taskGroup'
 import useTodo from '../hooks/useTodo'
 import { Priority } from '../components/PriorityList.vue'
+import { FormProps } from '@/views/todo/SearchForm.vue'
+
+dayjs.extend(isBetween)
 
 const { setItem, getItem } = useTodo()
 
@@ -76,6 +81,30 @@ export const useTasksStore = defineStore(TASKS, () => {
 		setItem(tasks.value)
 		return tasks
 	}
+	const searchTasks = (form: FormProps) => {
+		const format = 'YYYY-MM-DD'
+		const { createTime } = form
+		// filter task item createTime conform to timeRange
+		const conformToTimeRange = (task: Task) => {
+			const taskCreateTime = dayjs(task.createTime).format(format)
+			if (createTime === 'day') {
+				return dayjs().isSame(taskCreateTime, 'day')
+			}
+			if (createTime === 'weak') {
+				return dayjs(taskCreateTime).isBetween(
+					dayjs(),
+					dayjs().subtract(7, 'day')
+				)
+			}
+			if (createTime === 'month') {
+				return dayjs(taskCreateTime).isBetween(
+					dayjs(),
+					dayjs().subtract(30, 'day')
+				)
+			}
+		}
+		tasks.value = getItem().filter(task => conformToTimeRange(task))
+	}
 
 	return {
 		tasks,
@@ -83,6 +112,7 @@ export const useTasksStore = defineStore(TASKS, () => {
 		tasksById,
 		addTask,
 		updateTask,
-		toTop
+		toTop,
+		searchTasks
 	}
 })

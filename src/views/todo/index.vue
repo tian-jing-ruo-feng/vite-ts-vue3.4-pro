@@ -35,6 +35,7 @@
 		></Editor>
 		<!-- operation button intro -->
 		<el-divider> 任务列表 </el-divider>
+		<SearchForm @search="searchTasks"></SearchForm>
 		<el-scrollbar :height="height">
 			<Tasks
 				:tasks="tasksUnderTag!"
@@ -59,6 +60,7 @@ import { Task, useTasksStore } from '../../store/tasks'
 import { EditTaskType, type TaskUpdated } from './taskItem.vue'
 import useTodo from '../../hooks/useTodo'
 import { DATE_FORMAT, TASKS_TODO } from '../../consts'
+import SearchForm from './SearchForm.vue'
 
 interface Form {
 	task: string
@@ -67,7 +69,7 @@ interface Form {
 const { getItem } = useTodo()
 const store = useTasksStore()
 const { tasks, tasksByGroupTag, tasksById } = storeToRefs(store)
-const { addTask: add, updateTask: update, toTop } = store
+const { addTask: add, updateTask: update, toTop, searchTasks } = store
 const mainContent = inject<Ref<HTMLElement>>('mainContent')
 const height = ref('60vh')
 
