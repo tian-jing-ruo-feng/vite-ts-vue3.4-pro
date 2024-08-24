@@ -1,7 +1,8 @@
 <template>
 	<div class="todo">
 		<h2 class="title">
-			TODO LIST
+			<!-- TODO LIST -->
+			待办事项清单
 			<el-text tag="sub" size="small">
 				<el-button type="text" @click="isChart = !isChart">{{
 					areaLabel
@@ -40,6 +41,7 @@
 				</el-form>
 			</div>
 			<Editor
+				class="task-editor"
 				:height="'150px'"
 				:edit-content="editContent"
 				@cancel="handleEditorCancel"
@@ -307,18 +309,24 @@ onMounted(() => {
 	width: 75%;
 	margin: 0 auto;
 	.title {
+		font-size: 28px;
 		font-weight: bold;
 		text-align: center;
 		padding: 25px;
 	}
 
-	.add-area {
-		.input-task,
-		.add-button {
-			display: inline-block;
+	.todo-content {
+		.add-area {
+			.input-task,
+			.add-button {
+				display: inline-block;
+			}
+			.input-task {
+				width: auto;
+			}
 		}
-		.input-task {
-			width: auto;
+		.task-editor {
+			margin-bottom: 50px;
 		}
 	}
 }
