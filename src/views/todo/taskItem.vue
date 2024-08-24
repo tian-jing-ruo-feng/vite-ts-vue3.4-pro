@@ -280,6 +280,7 @@ const handleStateChange = (state: TaskState) => {
 	emit('changeTaskState', {
 		state,
 		id: props.task.id,
+		isTop: false,
 		updateTime: dayjs().format(DATE_FORMAT)
 	})
 }
