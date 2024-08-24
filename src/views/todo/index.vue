@@ -1,50 +1,62 @@
 <template>
 	<div class="todo">
-		<h2 class="title">TODO LIST</h2>
-		<task-group @select="handleTagSelected"></task-group>
-		<div v-if="false" class="add-area">
-			<el-form
-				ref="formRef"
-				:inline="true"
-				:model="form"
-				:rules="rules"
-				hide-required-asterisk
-				class="demo-form-inline"
-				@submit.prevent
-			>
-				<el-form-item label="添加任务：" prop="task">
-					<el-input
-						ref="inputTask"
-						v-model.trim="form.task"
-						type="textarea"
-						class="input-task"
-						clearable
-						@keyup.enter="addTask"
-					></el-input>
-					<el-button class="add-button" @click="addTask">
-						<el-icon color="green"><ep-plus></ep-plus></el-icon>
-					</el-button>
-				</el-form-item>
-			</el-form>
+		<h2 class="title">
+			TODO LIST
+			<el-text tag="sub" size="small">
+				<el-button type="text" @click="isChart = !isChart">{{
+					areaLabel
+				}}</el-button>
+			</el-text>
+		</h2>
+		<div v-if="isChart" class="tasks-charts">
+			<el-divider>任务统计</el-divider>
+			<TaskStatistics></TaskStatistics>
 		</div>
-		<Editor
-			:height="'150px'"
-			:edit-content="editContent"
-			@cancel="handleEditorCancel"
-			@confirm="handleEditorConfirm"
-		></Editor>
-		<!-- operation button intro -->
-		<el-divider> 任务列表 </el-divider>
-		<SearchForm v-if="tasks?.length" @search="handleSearchTasks"></SearchForm>
-		<el-scrollbar :height="height">
-			<Tasks
-				:tasks="tasksUnderTag!"
-				@edit="editTask"
-				@remove="removeTask"
-				@update="updateTask"
-				@to-top="topTask"
-			></Tasks>
-		</el-scrollbar>
+		<div v-else class="todo-content">
+			<task-group @select="handleTagSelected"></task-group>
+			<div v-if="false" class="add-area">
+				<el-form
+					ref="formRef"
+					:inline="true"
+					:model="form"
+					:rules="rules"
+					hide-required-asterisk
+					class="demo-form-inline"
+					@submit.prevent
+				>
+					<el-form-item label="添加任务：" prop="task">
+						<el-input
+							ref="inputTask"
+							v-model.trim="form.task"
+							type="textarea"
+							class="input-task"
+							clearable
+							@keyup.enter="addTask"
+						></el-input>
+						<el-button class="add-button" @click="addTask">
+							<el-icon color="green"><ep-plus></ep-plus></el-icon>
+						</el-button>
+					</el-form-item>
+				</el-form>
+			</div>
+			<Editor
+				:height="'150px'"
+				:edit-content="editContent"
+				@cancel="handleEditorCancel"
+				@confirm="handleEditorConfirm"
+			></Editor>
+			<el-divider> 任务列表 </el-divider>
+			<SearchForm v-if="tasks?.length" @search="handleSearchTasks"></SearchForm>
+			<el-scrollbar :height="height">
+				<Tasks
+					:tasks="tasksUnderTag!"
+					@edit="editTask"
+					@remove="removeTask"
+					@update="updateTask"
+					@to-top="topTask"
+				></Tasks>
+			</el-scrollbar>
+		</div>
 	</div>
 </template>
 
@@ -61,6 +73,7 @@ import { EditTaskType, type TaskUpdated } from './taskItem.vue'
 import useTodo from '../../hooks/useTodo'
 import { DATE_FORMAT, TASKS_TODO } from '../../consts'
 import SearchForm, { FormProps } from './SearchForm.vue'
+import TaskStatistics from './TasksStatistics.vue'
 
 interface Form {
 	task: string
@@ -72,6 +85,17 @@ const { tasks, tasksByGroupTag, tasksById } = storeToRefs(store)
 const { addTask: add, updateTask: update, toTop, searchTasks } = store
 const mainContent = inject<Ref<HTMLElement>>('mainContent')
 const height = ref('60vh')
+
+// area toggle
+const useArea = () => {
+	const isChart = ref(false)
+	const areaLabel = computed(() => (isChart.value ? '工作区' : '统计视图'))
+
+	return {
+		isChart,
+		areaLabel
+	}
+}
 
 // task group
 const useTaskGroup = () => {
@@ -246,6 +270,7 @@ const useSearchTasks = () => {
 	}
 }
 
+const { isChart, areaLabel } = useArea()
 const { tagSelected, handleTagSelected } = useTaskGroup()
 const {
 	inputTask,

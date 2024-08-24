@@ -39,6 +39,7 @@ declare module 'vue' {
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTag: typeof import('element-plus/es')['ElTag']
+    ElText: typeof import('element-plus/es')['ElText']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     EpCollectionTag: typeof import('~icons/ep/collection-tag')['default']
     EpCopyDocument: typeof import('~icons/ep/copy-document')['default']
