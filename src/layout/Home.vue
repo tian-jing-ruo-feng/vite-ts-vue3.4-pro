@@ -59,10 +59,11 @@ provide('mainContent', contentRef)
 
 // dark/light mode toggle
 const useTheme = () => {
+	type THEME_TYPE = 'light' | 'dark'
 	const handleCurrentTheme = () => {
 		const currentTheme = localStorage.getItem('theme')
 		if (currentTheme) {
-			theme.value = currentTheme
+			theme.value = currentTheme as THEME_TYPE
 		}
 		setTimeout(() => {
 			localStorage.setItem('theme', theme.value)
@@ -70,14 +71,15 @@ const useTheme = () => {
 	}
 	const THEME_LIGHT = 'light'
 	const THEME_DARK = 'dark'
-	const theme = ref('THEME_LIGHT')
+	const theme = ref<THEME_TYPE>(THEME_LIGHT)
 	handleCurrentTheme()
 	const isDarkTheme = computed(() => theme.value === THEME_DARK)
 	const isDark = useDark({
 		selector: 'html',
 		attribute: 'class',
-		valueDark: 'dark',
-		valueLight: 'light'
+		initialValue: theme.value,
+		valueDark: THEME_DARK,
+		valueLight: THEME_LIGHT
 	})
 	const toggleDark = useToggle(isDark)
 
