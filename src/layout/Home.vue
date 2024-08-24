@@ -5,6 +5,22 @@
 				<ul class="project-info">
 					<li>项目: {{ name }}@{{ version }}</li>
 					<li class="vue-version">Vue版本：Vue{{ VueVersion }}</li>
+					<!-- dark/light  -->
+					<li class="dark-light-theme">
+						<el-switch
+							v-model="theme"
+							inline-prompt
+							style="
+								--el-switch-on-color: #2c2c2c;
+								--el-switch-off-color: #e5eaf3;
+							"
+							:active-value="THEME_DARK"
+							:inactive-value="THEME_LIGHT"
+							:active-action-icon="Moon"
+							:inactive-action-icon="Sunny"
+							@change="themeChange"
+						/>
+					</li>
 					<li class="doc">
 						<router-link v-slot="{ navigate }" custom :to="{ path: '/readme' }">
 							<div @click="navigate">
@@ -30,6 +46,8 @@
 </template>
 
 <script setup lang="ts">
+import { Moon, Sunny } from '@element-plus/icons-vue'
+import { useDark, useToggle } from '@vueuse/core'
 import Menu from './Menu.vue'
 import pkg from '../../package.json'
 
@@ -38,6 +56,45 @@ const { vue: VueVersion } = dependencies
 
 const contentRef = ref<HTMLElement | null>(null)
 provide('mainContent', contentRef)
+
+// dark/light mode toggle
+const useTheme = () => {
+	const handleCurrentTheme = () => {
+		const currentTheme = localStorage.getItem('theme')
+		if (currentTheme) {
+			theme.value = currentTheme
+		}
+		setTimeout(() => {
+			localStorage.setItem('theme', theme.value)
+		}, 300)
+	}
+	const THEME_LIGHT = 'light'
+	const THEME_DARK = 'dark'
+	const theme = ref('THEME_LIGHT')
+	handleCurrentTheme()
+	const isDarkTheme = computed(() => theme.value === THEME_DARK)
+	const isDark = useDark({
+		selector: 'html',
+		attribute: 'class',
+		valueDark: 'dark',
+		valueLight: 'light'
+	})
+	const toggleDark = useToggle(isDark)
+
+	const themeChange = (selected: string) => {
+		localStorage.setItem('theme', selected)
+		toggleDark(isDarkTheme.value)
+	}
+
+	return {
+		THEME_LIGHT,
+		THEME_DARK,
+		theme,
+		themeChange
+	}
+}
+
+const { THEME_LIGHT, THEME_DARK, theme, themeChange } = useTheme()
 </script>
 
 <style lang="scss" scoped>
@@ -86,5 +143,28 @@ provide('mainContent', contentRef)
 }
 .header {
 	box-shadow: var(--el-box-shadow-light);
+
+	.dark-light-theme {
+		&:deep(.el-switch) {
+			.el-icon {
+				border-radius: 50%;
+			}
+			.el-switch__action {
+				.el-icon {
+					color: #000000;
+					background-color: rgba($color: #000000, $alpha: 0.1);
+				}
+			}
+
+			&.is-checked {
+				.el-switch__action {
+					background-color: rgba($color: #2c2c2c, $alpha: 1);
+					.el-icon {
+						color: rgba($color: #ffffff, $alpha: 1);
+					}
+				}
+			}
+		}
+	}
 }
 </style>
