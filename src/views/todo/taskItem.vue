@@ -17,6 +17,10 @@
 				class="task-group-priority"
 				:priority="task.priority"
 			></GroupPriority>
+			<!-- isTop -->
+			<el-icon v-if="task.isTop" class="top-icon" color="#E6A23C" size="18">
+				<FaAngleDoubleUp></FaAngleDoubleUp>
+			</el-icon>
 			<div class="task-item-setting">
 				<div class="expect-start-time expect-time">
 					<!-- 预计开始时间： -->
@@ -348,6 +352,9 @@ onMounted(() => {
 			display: inline-block;
 		}
 
+		.task-group-priority {
+			margin-right: 30px;
+		}
 		.task-group-tag {
 			margin-right: 20px;
 		}
@@ -434,5 +441,13 @@ onMounted(() => {
 }
 .is-top {
 	background-color: var(--el-menu-hover-bg-color);
+
+	.top-icon {
+		display: inline-block;
+		vertical-align: middle;
+		border-radius: 4px;
+		border: 1px solid var(--el-color-warning-light-3);
+		box-shadow: var(--el-box-shadow-light);
+	}
 }
 </style>
