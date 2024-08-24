@@ -70,7 +70,7 @@ const handleMenuItemClick = (callback: MenuContextItem['callback']) => {
 	margin: 0;
 	display: flex;
 	flex-direction: column;
-	background: #fff;
+	background-color: var(--el-bg-color);
 	box-shadow: var(--el-box-shadow-light);
 	border: 1px solid rgba($color: #303133, $alpha: 0.1);
 

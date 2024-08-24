@@ -433,6 +433,6 @@ onMounted(() => {
 	border-left: 4px solid $state-archive;
 }
 .is-top {
-	background-color: rgba($color: #ecf5ff, $alpha: 1);
+	background-color: var(--el-menu-hover-bg-color);
 }
 </style>
