@@ -35,7 +35,7 @@
 		></Editor>
 		<!-- operation button intro -->
 		<el-divider> 任务列表 </el-divider>
-		<SearchForm @search="handleSearchTasks"></SearchForm>
+		<SearchForm v-if="tasks?.length" @search="handleSearchTasks"></SearchForm>
 		<el-scrollbar :height="height">
 			<Tasks
 				:tasks="tasksUnderTag!"
