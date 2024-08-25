@@ -180,7 +180,13 @@ const getChartData = () => {
 const filterTasks = (searchForm: FormProps) => {
 	timeFilterForm.value = searchForm
 	const { xAxis, series } = getChartData()
-	options.xAxis = [{ type: 'category', data: xAxis }]
+	options.xAxis = [
+		{
+			type: 'category',
+			data: xAxis,
+			axisLabel: { rotate: xAxis.length > 7 ? -45 : 0 }
+		}
+	]
 	options.series = series
 	if (options?.title) {
 		options.title = {
