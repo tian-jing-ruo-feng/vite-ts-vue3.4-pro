@@ -41,6 +41,7 @@ const timeObj = {
 		duration: 30
 	}
 }
+let maxValue = ref(0)
 const options: EChartsOption = reactive({
 	title: {
 		text: '',
@@ -77,7 +78,11 @@ const options: EChartsOption = reactive({
 			nameTextStyle: {
 				align: 'right'
 			},
-			type: 'value'
+			type: 'value',
+			min: 0,
+			max: maxValue.value + 5 - (maxValue.value % 5),
+			minInterval: 1,
+			splitNumber: 5
 		}
 	],
 	series: [
@@ -168,6 +173,8 @@ const getChartData = () => {
 			}
 			const count = typeTasks ? typeTasks.length : 0
 			series[ind].data.push(count)
+			// 计算最大值
+			maxValue.value = maxValue.value > count ? maxValue.value : count
 		})
 	})
 
