@@ -1,5 +1,6 @@
 <template>
 	<div class="tasks-statistics">
+		<SearchForm @search="filterTasks"></SearchForm>
 		<div id="chart" ref="chartEle" style="width: 100%; height: 500px"></div>
 	</div>
 </template>
@@ -11,6 +12,9 @@ import dayjs from 'dayjs'
 import isBetween from 'dayjs/plugin/isBetween'
 import { useTasksStore } from '@/store/tasks'
 import { useTaskGroupStore } from '@/store/taskGroup'
+import SearchForm, { FormProps } from './SearchForm.vue'
+import { TASK_GROUP_ALL_TAG } from '@/consts'
+import { TasksArr } from './tasks.vue'
 
 dayjs.extend(isBetween)
 
@@ -20,10 +24,26 @@ const { tasks } = storeToRefs(taskStore)
 const { tags: taskGroups } = storeToRefs(taskGroupStore)
 
 const chartEle = ref<HTMLElement>()
-
+// const chartInstance = ref<ECharts>()
+const chartInstance = shallowRef<ECharts>()
+const timeFilterForm = ref<FormProps>()
+const timeObj = {
+	day: {
+		label: '今日',
+		duration: 1
+	},
+	weak: {
+		label: '近一周',
+		duration: 7
+	},
+	month: {
+		label: '近一月',
+		duration: 30
+	}
+}
 const options: EChartsOption = reactive({
 	title: {
-		text: '近一周任务统计',
+		text: '',
 		left: 'center'
 	},
 	tooltip: {
@@ -31,7 +51,7 @@ const options: EChartsOption = reactive({
 	},
 	legend: {
 		show: true,
-		left: '10%',
+		right: '10%',
 		top: 20
 	},
 	toolbox: {
@@ -43,7 +63,6 @@ const options: EChartsOption = reactive({
 			saveAsImage: { show: true }
 		}
 	},
-	calculable: true,
 	xAxis: [
 		{
 			type: 'category',
@@ -52,6 +71,12 @@ const options: EChartsOption = reactive({
 	],
 	yAxis: [
 		{
+			name: '个',
+			nameLocation: 'end',
+			nameGap: 20,
+			nameTextStyle: {
+				align: 'right'
+			},
 			type: 'value'
 		}
 	],
@@ -97,6 +122,7 @@ const getChartData = () => {
 	// 	type: string
 	// 	data: number[]
 	// }
+	const duration = timeObj[timeFilterForm.value!.createTime].duration
 	const xAxis: string[] = []
 	// const series: DataType[] = []
 	const series: any[] = []
@@ -109,18 +135,18 @@ const getChartData = () => {
 		})
 	})
 
-	// 默认展示近一周数据
-	for (let ind = 0; ind < 7; ind++) {
+	// 展示数据
+	for (let ind = 0; ind < duration; ind++) {
 		xAxis.push(dayjs().subtract(ind, 'day').format('YYYY-MM-DD'))
 	}
 	xAxis.reverse()
 
-	// 过滤近一周数据
+	// 过滤数据
 	const weaklyTasks = tasks.value?.filter(item => {
 		const { createTime } = item
 		const isContain = dayjs(createTime).isBetween(
 			dayjs(),
-			dayjs().subtract(7, 'day')
+			dayjs().subtract(duration, 'day')
 		)
 		return isContain
 	})
@@ -132,7 +158,13 @@ const getChartData = () => {
 		)
 		// 获取对应分类任务统计数据
 		taskGroups.value.forEach(({ id }, ind) => {
-			const typeTasks = tasksFilterd?.filter(task => task.groupTag === id)
+			const isAll = id === TASK_GROUP_ALL_TAG
+			let typeTasks: TasksArr | undefined = []
+			if (!isAll) {
+				typeTasks = tasksFilterd?.filter(task => task.groupTag === id)
+			} else {
+				typeTasks = tasksFilterd
+			}
 			const count = typeTasks ? typeTasks.length : 0
 			series[ind].data.push(count)
 		})
@@ -144,13 +176,39 @@ const getChartData = () => {
 	}
 }
 
-onMounted(() => {
+const filterTasks = (searchForm: FormProps) => {
+	timeFilterForm.value = searchForm
 	const { xAxis, series } = getChartData()
-	console.log(xAxis, series)
 	options.xAxis = [{ type: 'category', data: xAxis }]
 	options.series = series
+	if (options?.title) {
+		options.title = {
+			text: timeObj[timeFilterForm.value!.createTime].label + '任务统计',
+			left: 'center'
+		}
+	}
+	if (chartInstance.value) {
+		chartInstance.value?.setOption(options)
+	}
+}
+
+const initChart = () => {
+	const { xAxis, series } = getChartData()
+	options.xAxis = [{ type: 'category', data: xAxis }]
+	options.series = series
+	if (options?.title) {
+		options.title = {
+			text: timeObj[timeFilterForm.value!.createTime].label + '任务统计',
+			left: 'center'
+		}
+	}
 	const barChart = echarts.init(chartEle.value) as ECharts
+	chartInstance.value = barChart
 	barChart.setOption(options)
+}
+onMounted(async () => {
+	await nextTick()
+	initChart()
 })
 </script>
 
