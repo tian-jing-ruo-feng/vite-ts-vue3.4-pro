@@ -42,6 +42,9 @@ const timeObj = {
 	}
 }
 let maxValue = ref(0)
+const max = computed(
+	() => Math.floor(maxValue.value / 5) * 5 + 5 - (maxValue.value % 5)
+)
 const options: EChartsOption = reactive({
 	title: {
 		text: '',
@@ -80,7 +83,7 @@ const options: EChartsOption = reactive({
 			},
 			type: 'value',
 			min: 0,
-			max: maxValue.value + 5 - (maxValue.value % 5),
+			max,
 			minInterval: 1,
 			splitNumber: 5
 		}
@@ -175,6 +178,7 @@ const getChartData = () => {
 			series[ind].data.push(count)
 			// 计算最大值
 			maxValue.value = maxValue.value > count ? maxValue.value : count
+			console.log(maxValue.value)
 		})
 	})
 
