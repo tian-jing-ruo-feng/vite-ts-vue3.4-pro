@@ -220,9 +220,21 @@ const initChart = () => {
 	chartInstance.value = barChart
 	barChart.setOption(options)
 }
+
+const resizeChart = () => {
+	if (chartInstance.value) {
+		chartInstance.value.resize()
+	}
+}
 onMounted(async () => {
 	await nextTick()
 	initChart()
+
+	window.addEventListener('resize', resizeChart)
+})
+
+onUnmounted(() => {
+	window.removeEventListener('resize', resizeChart)
 })
 </script>
 
