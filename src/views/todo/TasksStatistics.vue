@@ -131,6 +131,7 @@ const getChartData = () => {
 		series.push({
 			name: type.name,
 			type: 'bar',
+			stack: 'one',
 			data: []
 		})
 	})
