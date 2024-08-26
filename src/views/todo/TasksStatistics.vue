@@ -24,7 +24,6 @@ const { tasks } = storeToRefs(taskStore)
 const { tags: taskGroups } = storeToRefs(taskGroupStore)
 
 const chartEle = ref<HTMLElement>()
-// const chartInstance = ref<ECharts>()
 const chartInstance = shallowRef<ECharts>()
 const timeFilterForm = ref<FormProps>()
 const timeObj = {
@@ -44,11 +43,7 @@ const timeObj = {
 const maxValue = ref(0)
 const max = computed(() => {
 	const MutipleOfFive = Math.floor(maxValue.value / 5)
-	const remainDerDivideFive = maxValue.value % 5
-	if (MutipleOfFive) {
-		return MutipleOfFive * 5 + 5 - remainDerDivideFive
-	}
-	return 5
+	return (MutipleOfFive + 1) * 5
 })
 const options: EChartsOption = reactive({
 	title: {
@@ -100,15 +95,6 @@ const options: EChartsOption = reactive({
 			data: [
 				2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3
 			]
-			// markPoint: {
-			// 	data: [
-			// 		{ type: 'max', name: 'Max' },
-			// 		{ type: 'min', name: 'Min' }
-			// 	]
-			// },
-			// markLine: {
-			// 	data: [{ type: 'average', name: 'Avg' }]
-			// }
 		},
 		{
 			name: 'Evaporation',
@@ -116,28 +102,13 @@ const options: EChartsOption = reactive({
 			data: [
 				2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3
 			]
-			// markPoint: {
-			// 	data: [
-			// 		{ name: 'Max', value: 182.2, xAxis: 7, yAxis: 183 },
-			// 		{ name: 'Min', value: 2.3, xAxis: 11, yAxis: 3 }
-			// 	]
-			// },
-			// markLine: {
-			// 	data: [{ type: 'average', name: 'Avg' }]
-			// }
 		}
 	]
 })
 
 const getChartData = () => {
-	// type DataType = {
-	// 	name: string
-	// 	type: string
-	// 	data: number[]
-	// }
 	const { duration } = timeObj[timeFilterForm.value!.createTime]
 	const xAxis: string[] = []
-	// const series: DataType[] = []
 	const series: any[] = []
 
 	taskGroups.value.forEach(type => {
