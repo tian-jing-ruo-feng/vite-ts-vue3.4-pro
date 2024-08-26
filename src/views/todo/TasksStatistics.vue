@@ -41,10 +41,15 @@ const timeObj = {
 		duration: 30
 	}
 }
-let maxValue = ref(0)
-const max = computed(
-	() => Math.floor(maxValue.value / 5) * 5 + 5 - (maxValue.value % 5)
-)
+const maxValue = ref(0)
+const max = computed(() => {
+	const MutipleOfFive = Math.floor(maxValue.value / 5)
+	const remainDerDivideFive = maxValue.value % 5
+	if (MutipleOfFive) {
+		return MutipleOfFive * 5 + 5 - remainDerDivideFive
+	}
+	return 5
+})
 const options: EChartsOption = reactive({
 	title: {
 		text: '',
@@ -130,7 +135,7 @@ const getChartData = () => {
 	// 	type: string
 	// 	data: number[]
 	// }
-	const duration = timeObj[timeFilterForm.value!.createTime].duration
+	const { duration } = timeObj[timeFilterForm.value!.createTime]
 	const xAxis: string[] = []
 	// const series: DataType[] = []
 	const series: any[] = []
@@ -201,7 +206,7 @@ const filterTasks = (searchForm: FormProps) => {
 	options.series = series
 	if (options?.title) {
 		options.title = {
-			text: timeObj[timeFilterForm.value!.createTime].label + '任务统计',
+			text: `${timeObj[timeFilterForm.value!.createTime].label}任务统计`,
 			left: 'center'
 		}
 	}
@@ -216,7 +221,7 @@ const initChart = () => {
 	options.series = series
 	if (options?.title) {
 		options.title = {
-			text: timeObj[timeFilterForm.value!.createTime].label + '任务统计',
+			text: `${timeObj[timeFilterForm.value!.createTime].label}任务统计`,
 			left: 'center'
 		}
 	}
