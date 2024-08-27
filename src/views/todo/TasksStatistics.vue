@@ -1,13 +1,20 @@
 <template>
 	<div class="tasks-statistics">
 		<SearchForm @search="filterTasks"></SearchForm>
-		<div
-			id="task-state"
-			ref="taskStateRef"
-			style="width: 100%; height: 500px"
-		></div>
-		<el-divider></el-divider>
-		<div id="chart" ref="chartEle" style="width: 100%; height: 500px"></div>
+		<el-space fill wrap :fill-ratio="45" style="width: 100%" size="large">
+			<el-card :body-style="{ width: '32vw' }" shadow="hover">
+				<template #header>任务状态</template>
+				<div
+					id="task-state"
+					ref="taskStateRef"
+					style="width: 100%; height: 350px"
+				></div>
+			</el-card>
+			<el-card :body-style="{ width: '32vw' }" shadow="hover">
+				<template #header>任务统计</template>
+				<div id="chart" ref="chartEle" style="width: 100%; height: 350px"></div>
+			</el-card>
+		</el-space>
 	</div>
 </template>
 
