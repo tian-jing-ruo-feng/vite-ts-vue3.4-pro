@@ -156,10 +156,15 @@ const useTaskStatistics = () => {
 		// 过滤数据
 		const tasksOfTimePeriod = tasks.value?.filter(item => {
 			const { createTime } = item
-			const isContain = dayjs(createTime).isBetween(
-				dayjs(),
-				dayjs().subtract(duration, 'day')
-			)
+			let isContain = false
+			if (duration === 1) {
+				isContain = dayjs(createTime).isBetween(dayjs().startOf('day'), dayjs())
+			} else {
+				isContain = dayjs(createTime).isBetween(
+					dayjs(),
+					dayjs().subtract(duration, 'day')
+				)
+			}
 			return isContain
 		})
 
@@ -260,23 +265,6 @@ const resizeChart = () => {
 }
 
 const useTaskState = () => {
-	const getTasksOfTimePeriod = () => {
-		nextTick(() => {
-			const { duration } = timeObj[timeFilterForm.value!.createTime]
-			// 过滤数据
-			const tasksOfTimePeriod = tasks.value?.filter(item => {
-				const { createTime } = item
-				const isContain = dayjs(createTime).isBetween(
-					dayjs(),
-					dayjs().subtract(duration, 'day')
-				)
-				return isContain
-			})
-
-			return tasksOfTimePeriod
-		})
-	}
-	const tasksOfTimePeriod = getTasksOfTimePeriod() as unknown as TasksArr
 	const taskStateChartInstance = shallowRef<ECharts>()
 	const max = ref(0)
 	const taskStateChartOption: EChartsOption = reactive({
@@ -343,10 +331,15 @@ const useTaskState = () => {
 		const { duration } = timeObj[timeFilterForm.value!.createTime]
 		const tasksOfTimePeriod = tasks.value?.filter(item => {
 			const { createTime } = item
-			const isContain = dayjs(createTime).isBetween(
-				dayjs(),
-				dayjs().subtract(duration, 'day')
-			)
+			let isContain = false
+			if (duration === 1) {
+				isContain = dayjs(createTime).isBetween(dayjs().startOf('day'), dayjs())
+			} else {
+				isContain = dayjs(createTime).isBetween(
+					dayjs(),
+					dayjs().subtract(duration, 'day')
+				)
+			}
 			return isContain
 		})
 		if (tasksOfTimePeriod?.length) {
