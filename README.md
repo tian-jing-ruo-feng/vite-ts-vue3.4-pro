@@ -93,11 +93,11 @@ vite-ts-vue3.4-pro
 
 ### 使用
 
-##### 初始页面
+#### 初始页面
 
 ![alt text](./src/assets/todo_init.png)
 
-##### 添加任务项
+#### 添加任务项
 
 ![alt text](./src/assets/todo_item.png)
 
