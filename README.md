@@ -95,19 +95,19 @@ vite-ts-vue3.4-pro
 
 #### 初始页面
 
-![alt text](./src/assets/todo_init.png)
+![alt text](./public/todo_init.png)
 
 #### 添加任务项
 
-![alt text](./src/assets/todo_item.png)
+![alt text](./public/todo_item.png)
 
 #### 添加分组/双击编辑分组
 
-![alt text](./src/assets/todo_item_group.png)
+![alt text](./public/todo_item_group.png)
 
 #### 右键菜单
 
-![alt text](./src/assets/todo_item_contextmenu.png)
+![alt text](./public/todo_item_contextmenu.png)
 
 ### 功能开发进度
 
