@@ -37,6 +37,13 @@
 				<el-card class="main-content-card">
 					<Menu></Menu>
 					<div ref="contentRef" class="content">
+						<el-backtop
+							bottom="100"
+							right="100"
+							target=".content"
+							:visibility-height="100"
+						>
+						</el-backtop>
 						<router-view></router-view>
 					</div>
 				</el-card>
