@@ -35,7 +35,7 @@
 			</el-header>
 			<el-main class="main">
 				<el-card class="main-content-card">
-					<Menu></Menu>
+					<Menu class="main-content-menu"></Menu>
 					<div ref="contentRef" class="content">
 						<el-backtop
 							bottom="100"
@@ -142,9 +142,14 @@ const { THEME_LIGHT, THEME_DARK, theme, themeChange } = useTheme()
 		display: flex;
 		.main-content-card {
 			flex: 1;
+			.main-content-menu {
+				position: sticky;
+				top: 20px;
+				z-index: 1;
+			}
 			.content {
 				max-height: calc(100vh - 180px);
-				padding: 20px;
+				margin: 20px;
 				overflow-y: auto;
 			}
 		}
