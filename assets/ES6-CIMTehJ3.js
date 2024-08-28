@@ -1,1 +1,0 @@
-import{_ as o,c as t,N as c,o as a,J as _,K as d,a as s}from"./index-Ci747rwa.js";const n={},r=e=>(_("data-v-e3f80212"),e=e(),d(),e),p={class:"es6"},l=r(()=>s("div",null,[c("tCO"),s("sub",null,"2")],-1));function f(e,i){return a(),t("div",p,[c(" ES6 "),l])}const h=o(n,[["render",f],["__scopeId","data-v-e3f80212"]]);export{h as default};
