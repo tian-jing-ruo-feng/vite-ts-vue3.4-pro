@@ -10,7 +10,7 @@ declare module '*.md' {
 	const html: string
 
 	// When "Mode.RAW" is requested
-	const raw: string
+	const markdown: string
 
 	// When "Mode.React" is requested. VFC could take a generic like React.VFC<{ MyComponent: TypeOfMyComponent }>
 	import React from 'react'
@@ -30,6 +30,7 @@ declare module '*.md' {
 		attributes,
 		toc,
 		html,
+		markdown,
 		ReactComponent,
 		VueComponent,
 		VueComponentWith

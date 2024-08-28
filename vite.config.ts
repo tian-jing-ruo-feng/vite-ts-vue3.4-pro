@@ -52,7 +52,7 @@ export default defineConfig({
 		}),
 
 		mdPlugin({
-			mode: [Mode.HTML, Mode.TOC, Mode.VUE]
+			mode: [Mode.HTML, Mode.TOC, Mode.VUE, Mode.MARKDOWN]
 		} as PluginOptions)
 	],
 
