@@ -155,6 +155,7 @@ const useTaskStatistics = () => {
 
 		// 过滤数据
 		const tasksOfTimePeriod = tasks.value?.filter(item => {
+			if (item.isRemoved) return false
 			const { createTime } = item
 			let isContain = false
 			if (duration === 1) {
@@ -330,6 +331,7 @@ const useTaskState = () => {
 		// 过滤数据
 		const { duration } = timeObj[timeFilterForm.value!.createTime]
 		const tasksOfTimePeriod = tasks.value?.filter(item => {
+			if (item.isRemoved) return false
 			const { createTime } = item
 			let isContain = false
 			if (duration === 1) {
