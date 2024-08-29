@@ -36,7 +36,7 @@
 			<el-main class="main">
 				<el-card class="main-content-card">
 					<Menu class="main-content-menu"></Menu>
-					<div ref="contentRef" class="content">
+					<div id="content" ref="contentRef" class="content">
 						<el-backtop
 							bottom="100"
 							right="100"
@@ -54,9 +54,9 @@
 
 <script setup lang="ts">
 import { Moon, Sunny } from '@element-plus/icons-vue'
-import { useDark, useToggle } from '@vueuse/core'
 import Menu from './Menu.vue'
 import pkg from '../../package.json'
+import { useTheme } from '@/store/theme'
 
 const { name, version, dependencies } = pkg
 const { vue: VueVersion } = dependencies
@@ -64,46 +64,9 @@ const { vue: VueVersion } = dependencies
 const contentRef = ref<HTMLElement | null>(null)
 provide('mainContent', contentRef)
 
-// dark/light mode toggle
-const useTheme = () => {
-	type THEME_TYPE = 'light' | 'dark'
-	const handleCurrentTheme = () => {
-		const currentTheme = localStorage.getItem('theme')
-		if (currentTheme) {
-			theme.value = currentTheme as THEME_TYPE
-		}
-		setTimeout(() => {
-			localStorage.setItem('theme', theme.value)
-		}, 300)
-	}
-	const THEME_LIGHT = 'light'
-	const THEME_DARK = 'dark'
-	const theme = ref<THEME_TYPE>(THEME_LIGHT)
-	handleCurrentTheme()
-	const isDarkTheme = computed(() => theme.value === THEME_DARK)
-	const isDark = useDark({
-		selector: 'html',
-		attribute: 'class',
-		initialValue: theme.value,
-		valueDark: THEME_DARK,
-		valueLight: THEME_LIGHT
-	})
-	const toggleDark = useToggle(isDark)
-
-	const themeChange = (selected: string) => {
-		localStorage.setItem('theme', selected)
-		toggleDark(isDarkTheme.value)
-	}
-
-	return {
-		THEME_LIGHT,
-		THEME_DARK,
-		theme,
-		themeChange
-	}
-}
-
-const { THEME_LIGHT, THEME_DARK, theme, themeChange } = useTheme()
+const themeStore = useTheme()
+const { theme } = storeToRefs(themeStore)
+const { THEME_LIGHT, THEME_DARK, themeChange } = themeStore
 </script>
 
 <style lang="scss" scoped>
@@ -148,7 +111,7 @@ const { THEME_LIGHT, THEME_DARK, theme, themeChange } = useTheme()
 				z-index: 1;
 			}
 			.content {
-				max-height: calc(100vh - 180px);
+				max-height: calc(100vh - 240px);
 				margin: 20px;
 				overflow-y: auto;
 			}

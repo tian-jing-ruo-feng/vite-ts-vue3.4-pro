@@ -1,6 +1,6 @@
 <template>
 	<div id="readme-catalog" class="readme-doc">
-		<ul class="readme-catalog">
+		<!-- <ul class="readme-catalog">
 			<li
 				v-for="({ text, level, active }, ind) in catalog"
 				:key="ind"
@@ -9,12 +9,23 @@
 			>
 				{{ text }}
 			</li>
-		</ul>
+		</ul> -->
+		<div class="readme-catalog">
+			<MdCatalog
+				:editor-id="markdownPreviewId"
+				:theme="theme"
+				:scroll-element="scrollElement"
+				:is-scroll-element-in-shadow="true"
+				@click="catalogClick"
+				@active="catalogActive"
+			/>
+		</div>
 		<MdPreview
 			v-model="markdown"
 			class="markdown-preview"
-			theme="light"
-			preview-theme="default"
+			preview-theme="dark-light-theme"
+			:editor-id="markdownPreviewId"
+			:theme="theme"
 			:mdHeadingId="mdHeadingId"
 			:on-get-catalog="getCatalog"
 		/>
@@ -22,9 +33,16 @@
 </template>
 
 <script setup lang="ts">
-import { HeadList, MdPreview } from 'md-editor-v3'
+import { HeadList, MdPreview, MdCatalog } from 'md-editor-v3'
+import { TocItem } from 'md-editor-v3/lib/types/MdCatalog/MdCatalog'
 import { markdown } from '../../../README.md'
-import 'md-editor-v3/lib/style.css'
+import 'md-editor-v3/lib/preview.css'
+import { useTheme } from '@/store/theme'
+
+const themeStore = useTheme()
+const { theme } = storeToRefs(themeStore)
+const markdownPreviewId = 'custom-preview-markdown'
+const scrollElement = document.getElementById('content') as HTMLElement
 
 const catalog = ref<HeadList[]>()
 
@@ -35,6 +53,13 @@ const mdHeadingId = (text: string, level: number, index: number) => {
 
 const getCatalog = (list: HeadList[]) => {
 	catalog.value = list
+}
+
+const catalogClick = ({ e, t }: { e: PointerEvent; t: TocItem }) => {
+	console.log(t)
+}
+const catalogActive = (params: any) => {
+	console.log(params, 'active')
 }
 
 const clickCatalog = (ind: number, level: number) => {
@@ -65,19 +90,20 @@ const clickCatalog = (ind: number, level: number) => {
 	width: 65vw;
 	padding: 20px;
 	margin: 0 auto;
-	padding-bottom: 50px;
+	// padding-bottom: 50px;
+	background: var(--el-bg-color-overlay);
 
 	.readme-catalog {
 		position: fixed;
 		top: 200px;
-		left: 16vw;
+		left: 10vw;
 		width: 300px;
 		z-index: 2;
-		background: #fff;
+		// background: var(--el-bg-color-overlay);
 	}
 
 	.markdown-preview {
-		padding-left: 300px;
+		margin-left: 220px;
 	}
 }
 
