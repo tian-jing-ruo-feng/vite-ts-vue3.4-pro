@@ -9,6 +9,7 @@ nextTick(() => {
 		document.getElementById('calendar'),
 		{
 			manualEditingEnabled: true,
+			// eslint-disable-next-line no-underscore-dangle
 			...window.__TRANSLATION_OPTIONS,
 			views: {
 				fullMonth: {
