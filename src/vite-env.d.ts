@@ -36,3 +36,8 @@ declare module '*.md' {
 		VueComponentWith
 	}
 }
+
+declare interface Window {
+	calendarJs: any
+	__TRANSLATION_OPTIONS: any
+}

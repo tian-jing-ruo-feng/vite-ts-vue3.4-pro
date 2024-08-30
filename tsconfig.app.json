@@ -16,6 +16,7 @@
 		"moduleDetection": "force",
 		"noEmit": true,
 		"jsx": "preserve",
+		"allowJs": true,
 
 		/* Linting */
 		"strict": true,
@@ -36,5 +37,6 @@
 		"src/**/*.d.ts",
 		"src/**/*.tsx",
 		"auto-imports.d.ts"
-	]
+	],
+	"exclude": ["src/assets/calendar/*"]
 }
