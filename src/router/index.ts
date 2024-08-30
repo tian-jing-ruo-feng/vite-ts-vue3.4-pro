@@ -15,17 +15,17 @@ export const routes: RouteRecordRaw[] = [
 		component: Home,
 		children: [
 			{
-				name: 'Todo',
+				name: '待办',
 				path: 'todo',
 				component: () => import('../views/todo/index.vue')
 			},
 			{
-				name: 'Draggable',
+				name: '拖拽',
 				path: 'draggable',
 				component: () => import('../views/draggable/index.vue')
 			},
 			{
-				name: 'Example',
+				name: '测试案例',
 				path: 'example',
 				component: () => import('../views/example/index.vue'),
 				children: [
@@ -42,7 +42,12 @@ export const routes: RouteRecordRaw[] = [
 				]
 			},
 			{
-				name: 'README',
+				name: '日程',
+				path: 'Calendar',
+				component: () => import('../components/Calendar.vue')
+			},
+			{
+				name: '文档',
 				path: 'readme',
 				component: () => import('../views/readme/index.vue')
 			}
