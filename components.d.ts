@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Calendar: typeof import('./src/components/Calendar.vue')['default']
     ContextMenu: typeof import('./src/components/ContextMenu.vue')['default']
     Draggable: typeof import('./src/components/Draggable.vue')['default']
     ElBacktop: typeof import('element-plus/es')['ElBacktop']
