@@ -37,14 +37,16 @@
 				<el-card class="main-content-card">
 					<Menu class="main-content-menu"></Menu>
 					<div id="content" ref="contentRef" class="content">
-						<el-backtop
-							bottom="100"
-							right="100"
-							target=".content"
-							:visibility-height="100"
-						>
-						</el-backtop>
-						<router-view></router-view>
+						<el-scrollbar>
+							<el-backtop
+								bottom="100"
+								right="100"
+								target=".el-scrollbar .el-scrollbar__wrap"
+								:visibility-height="100"
+							>
+							</el-backtop>
+							<router-view></router-view>
+						</el-scrollbar>
 					</div>
 				</el-card>
 			</el-main>
@@ -102,18 +104,19 @@ const { THEME_LIGHT, THEME_DARK, themeChange } = themeStore
 
 	.main {
 		flex: 1;
-		display: flex;
+		overflow: hidden;
+		// display: flex;
 		.main-content-card {
-			flex: 1;
+			// flex: 1;
 			.main-content-menu {
-				position: sticky;
-				top: 20px;
-				z-index: 1;
+				margin-bottom: 20px;
+				// position: sticky;
+				// top: 20px;
+				// z-index: 1;
 			}
 			.content {
+				height: calc(100vh - 240px);
 				max-height: calc(100vh - 240px);
-				margin: 20px;
-				overflow-y: auto;
 			}
 		}
 	}
