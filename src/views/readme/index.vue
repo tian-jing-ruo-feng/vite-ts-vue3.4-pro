@@ -10,7 +10,7 @@
 			/>
 		</div>
 		<MdPreview
-			v-model="markdown"
+			v-model="markdownContent"
 			class="markdown-preview"
 			preview-theme="dark-light-theme"
 			:editor-id="markdownPreviewId"
@@ -26,11 +26,18 @@ import { markdown } from '../../../README.md'
 import 'md-editor-v3/lib/preview.css'
 import { useTheme } from '@/store/theme'
 
+const markdownContent = ref<string>()
+
+if (process.env.NODE_ENV === 'production') {
+	markdownContent.value = markdown.replaceAll('./public', '')
+} else {
+	markdownContent.value = markdown
+}
+
 const themeStore = useTheme()
 const { theme } = storeToRefs(themeStore)
 const markdownPreviewId = 'custom-preview-markdown'
 const scrollElement = document.getElementById('content') as HTMLElement
-console.log(scrollElement, 'scroll-element')
 
 const catalogClick = (e: MouseEvent, tocItem: TocItem) => {
 	e.preventDefault()
