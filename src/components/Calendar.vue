@@ -20,6 +20,10 @@ nextTick(() => {
 			visibleDays: [0, 1, 2, 3, 4, 5, 6]
 		}
 	)
+	// Search Options allow you to customize how Calendar.js Search dialog will function. You can set them manually as follows:
+	calendarInstance.setSearchOptions({
+		matchCase: false
+	})
 })
 </script>
 
