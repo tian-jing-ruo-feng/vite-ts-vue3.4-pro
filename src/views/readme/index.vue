@@ -29,7 +29,7 @@ import { useTheme } from '@/store/theme'
 const markdownContent = ref<string>()
 
 if (process.env.NODE_ENV === 'production') {
-	markdownContent.value = markdown.replaceAll('./public', '')
+	markdownContent.value = markdown.replaceAll('./public', '.')
 } else {
 	markdownContent.value = markdown
 }
