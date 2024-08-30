@@ -37,7 +37,9 @@ if (process.env.NODE_ENV === 'production') {
 const themeStore = useTheme()
 const { theme } = storeToRefs(themeStore)
 const markdownPreviewId = 'custom-preview-markdown'
-const scrollElement = document.getElementById('content') as HTMLElement
+const scrollElement = document.querySelector(
+	'.el-scrollbar .el-scrollbar__wrap'
+) as HTMLElement
 
 const catalogClick = (e: MouseEvent, tocItem: TocItem) => {
 	e.preventDefault()
