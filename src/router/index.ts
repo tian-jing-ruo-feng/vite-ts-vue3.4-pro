@@ -47,6 +47,11 @@ export const routes: RouteRecordRaw[] = [
 				component: () => import('../components/Calendar.vue')
 			},
 			{
+				name: 'markdonw编辑器',
+				path: 'markdonw-editor',
+				component: () => import('../views/markdownEditor/index.vue')
+			},
+			{
 				name: '文档',
 				path: 'readme',
 				component: () => import('../views/readme/index.vue')
