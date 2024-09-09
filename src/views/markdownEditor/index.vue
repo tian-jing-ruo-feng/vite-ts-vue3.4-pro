@@ -2,13 +2,24 @@
 	<div class="markdown-editor">
 		<MdEditor
 			v-model="text"
+			show-toolbar-name
 			:theme="theme"
-			:toolbars-exclude="toolbarsExclude"
+			:toolbars="toolbars"
 			class="md-editor"
 			@on-save="onSave"
 			@on-upload-img="onUploadImg"
-		/>
-		<el-dialog v-model="dialogFormVisible" title="保存下载" width="500">
+		>
+			<template #defToolbars>
+				<NormalToolbar title="导入" @on-click="importFile">
+					<template #trigger>
+						<UploadFilled />
+						<div class="md-editor-toolbar-item-name">导入</div>
+					</template>
+				</NormalToolbar>
+			</template>
+		</MdEditor>
+		<!-- 保存下载 -->
+		<el-dialog v-model="dialogFormVisible" title="保存下载" width="400">
 			<el-form
 				ref="saveFormRef"
 				class="save-form"
@@ -48,14 +59,31 @@
 				</div>
 			</template>
 		</el-dialog>
+		<!-- 导入文件: .html / .md -->
+		<el-dialog v-model="importDialogVisible" title="导入文件">
+			<el-upload
+				class="upload-demo"
+				drag
+				action=""
+				accept=".html,.md"
+				:before-upload="beforeImportFile"
+				:http-request="handleImportFile"
+			>
+				<el-icon class="el-icon--upload"><upload-filled /></el-icon>
+				<div class="el-upload__text">拖拽文件到这里 <em>点击导入</em></div>
+				<template #tip>
+					<div class="el-upload__tip">请上传 html 或 markdonw 文件</div>
+				</template>
+			</el-upload>
+		</el-dialog>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { MdEditor, ToolbarNames } from 'md-editor-v3'
+import { MdEditor, ToolbarNames, NormalToolbar, Insert } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
-import { ElMessageBox, ElSelect, FormInstance, FormRules } from 'element-plus'
-import { Download } from '@element-plus/icons-vue'
+import { ElSelect, FormInstance, FormRules } from 'element-plus'
+import { UploadFilled } from '@element-plus/icons-vue'
 import { useTheme } from '@/store/theme'
 import { markdown } from './demo.md'
 import { downloadFile } from '@/utils/common'
@@ -67,76 +95,154 @@ const { theme } = storeToRefs(themeStore)
 // editor content text
 const text = ref(markdown)
 const mdHtml = ref()
-const toolbarsExclude = ref<ToolbarNames[]>(['github'])
+const toolbars = ref<ToolbarNames[]>([
+	'bold',
+	'underline',
+	'italic',
+	'-',
+	'title',
+	'strikeThrough',
+	'sub',
+	'sup',
+	'quote',
+	'unorderedList',
+	'orderedList',
+	'task',
+	'-',
+	'codeRow',
+	'code',
+	'link',
+	'image',
+	'table',
+	'mermaid',
+	'katex',
+	'-',
+	'revoke',
+	'next',
+	'save',
+	0,
+	'=',
+	'pageFullscreen',
+	'fullscreen',
+	'preview',
+	'previewOnly',
+	'htmlPreview',
+	'catalog'
+])
 
 // save and export
-const dialogFormVisible = ref(false)
-const saveFormRef = ref<FormInstance>()
-const form = reactive({
-	fileType: {
-		ext: '.md',
-		mimeType: 'text/x-markdown'
-	},
-	fileName: '我的文件'
-})
-const formRules = reactive<FormRules<typeof form>>({
-	fileName: {
-		required: true,
-		message: '请输入文件名称',
-		trigger: 'blur'
-	},
-	fileType: {
-		required: true,
-		message: '请选择文件类型',
-		trigger: 'blur'
-	}
-})
-const fileTypes = [
-	{
-		label: 'markdown',
-		value: {
+const useSaveDialog = () => {
+	const dialogFormVisible = ref(false)
+	const saveFormRef = ref<FormInstance>()
+	const form = reactive({
+		fileType: {
 			ext: '.md',
 			mimeType: 'text/x-markdown'
+		},
+		fileName: '我的文件'
+	})
+	const formRules = reactive<FormRules<typeof form>>({
+		fileName: {
+			required: true,
+			message: '请输入文件名称',
+			trigger: 'blur'
+		},
+		fileType: {
+			required: true,
+			message: '请选择文件类型',
+			trigger: 'blur'
 		}
-	},
-	{
-		label: 'html',
-		value: {
-			ext: '.html',
-			mimeType: '.html'
+	})
+	const fileTypes = [
+		{
+			label: 'markdown',
+			value: {
+				ext: '.md',
+				mimeType: 'text/x-markdown'
+			}
+		},
+		{
+			label: 'html',
+			value: {
+				ext: '.html',
+				mimeType: '.html'
+			}
+		}
+	]
+	const exportFile = () => {
+		saveFormRef.value?.validate(validate => {
+			if (validate) {
+				// 表单校验成功
+				// 导出文件
+				downloadFile(
+					form.fileType.ext === '.md' ? text.value : mdHtml.value,
+					form.fileType.mimeType,
+					form.fileName + form.fileType.ext
+				)
+			}
+		})
+	}
+
+	return {
+		dialogFormVisible,
+		saveFormRef,
+		form,
+		formRules,
+		fileTypes,
+		exportFile
+	}
+}
+
+// import file
+const useImportFileDialog = () => {
+	const importDialogVisible = ref(false)
+
+	const beforeImportFile = (file: File) => {
+		const reader = new FileReader()
+		reader.onload = ev => {
+			const result = ev.target?.result
+			text.value = result as string
+		}
+		if (file) {
+			reader.readAsText(file)
 		}
 	}
-]
+	const handleImportFile = () => {
+		importDialogVisible.value = false
+	}
+	return {
+		importDialogVisible,
+		beforeImportFile,
+		handleImportFile
+	}
+}
+
+const {
+	dialogFormVisible,
+	saveFormRef,
+	form,
+	formRules,
+	fileTypes,
+	exportFile
+} = useSaveDialog()
+const { importDialogVisible, beforeImportFile, handleImportFile } =
+	useImportFileDialog()
 
 // event handlers
+const importFile = () => {
+	importDialogVisible.value = true
+}
+
 const onSave = (v: string, h: Promise<any>) => {
-	console.log(v, 'v')
 	h.then((html: string) => {
-		console.log(html, 'html')
 		mdHtml.value = html
 	})
 	dialogFormVisible.value = true
 }
 
-const exportFile = () => {
-	saveFormRef.value?.validate(validate => {
-		if (validate) {
-			// 表单校验成功
-			// 导出文件
-			downloadFile(
-				form.fileType.ext === '.md' ? text.value : mdHtml.value,
-				form.fileType.mimeType,
-				form.fileName + form.fileType.ext
-			)
-		}
-	})
-}
-
 const onUploadImg = async (files: File[], callback: (x: any[]) => void) => {
-	console.log(files)
 	const reader = new FileReader()
 	reader.onload = ev => {
-		// console.log(ev, 'ev')
 		const imgFile = ev.target?.result
 		callback([imgFile])
 	}

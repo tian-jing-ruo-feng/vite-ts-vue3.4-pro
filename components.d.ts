@@ -45,6 +45,7 @@ declare module 'vue' {
     ElTag: typeof import('element-plus/es')['ElTag']
     ElText: typeof import('element-plus/es')['ElText']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
+    ElUpload: typeof import('element-plus/es')['ElUpload']
     EpCollectionTag: typeof import('~icons/ep/collection-tag')['default']
     EpCopyDocument: typeof import('~icons/ep/copy-document')['default']
     EpDelete: typeof import('~icons/ep/delete')['default']
