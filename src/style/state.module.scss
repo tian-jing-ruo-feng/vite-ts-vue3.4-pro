@@ -1,0 +1,10 @@
+$primary-color: #41b883;
+$state-todo: #67c23a;
+$state-done: #008000;
+$state-archive: $primary-color;
+
+:export {
+	stateTodo: $state-todo;
+	stateDone: $state-done;
+	stateArchive: $state-archive;
+}

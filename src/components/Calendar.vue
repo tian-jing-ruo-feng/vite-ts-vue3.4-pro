@@ -4,6 +4,8 @@
 
 <script setup lang="ts">
 import { useTasksStore } from '@/store/tasks'
+// * use scss :export {} variables, the scss files must end with 'module.scss'
+import stateStyles from '@/style/state.module.scss'
 
 const { tasks } = toRefs(useTasksStore())
 
@@ -35,19 +37,28 @@ nextTick(() => {
 	// add custom events
 	// event json config can look up (https://calendar-js.com/documentation/event.html)
 	const events = tasks.value?.map(event => {
-		const { id, name, createTime, updateTime, expectEndTime, expectStartTime } =
-			event
+		const {
+			id,
+			name,
+			createTime,
+			updateTime,
+			expectEndTime,
+			expectStartTime,
+			state
+		} = event
+		const eventState = (_state: string) =>
+			_state.slice(0, 1).toUpperCase() + _state.slice(1)
 		return {
 			id,
 			title: name,
-			from: expectStartTime,
-			to: expectEndTime,
+			from: expectStartTime || createTime,
+			to: expectEndTime || updateTime,
 			description: name,
 			created: createTime,
-			type: 4
+			type: 4,
+			color: stateStyles[`state${eventState(state!)}`]
 		}
 	})
-	// console.log(tasks.value)
 	calendarInstance.addEvents(events)
 })
 </script>
