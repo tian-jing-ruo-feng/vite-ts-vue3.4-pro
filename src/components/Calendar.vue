@@ -70,8 +70,9 @@ nextTick(() => {
 </style>
 <style scoped lang="scss">
 #calendar {
-	width: 98%;
-	height: calc(100% - 20px);
-	margin: auto;
+	padding: 0;
+	margin: 0;
+	border: none;
+	min-height: inherit;
 }
 </style>
