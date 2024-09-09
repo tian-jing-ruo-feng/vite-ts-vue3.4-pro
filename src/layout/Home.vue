@@ -30,6 +30,7 @@
 								</el-icon>
 							</div>
 						</router-link>
+						<UserLogin class="user"></UserLogin>
 					</li>
 				</ul>
 			</el-header>
@@ -59,6 +60,7 @@ import { Moon, Sunny } from '@element-plus/icons-vue'
 import Menu from './Menu.vue'
 import pkg from '../../package.json'
 import { useTheme } from '@/store/theme'
+import UserLogin from './UserLogin.vue'
 
 const { name, version, dependencies } = pkg
 const { vue: VueVersion } = dependencies
@@ -91,12 +93,17 @@ const { THEME_LIGHT, THEME_DARK, themeChange } = themeStore
 			}
 
 			.doc {
+				display: flex;
 				position: absolute;
 				right: 40px;
 				cursor: pointer;
 				.doc-label {
 					font-size: 16px;
 					margin-right: 10px;
+				}
+
+				.user {
+					margin-left: 20px;
 				}
 			}
 		}

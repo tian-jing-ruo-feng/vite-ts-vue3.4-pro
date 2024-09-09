@@ -10,6 +10,7 @@ declare module 'vue' {
     Calendar: typeof import('./src/components/Calendar.vue')['default']
     ContextMenu: typeof import('./src/components/ContextMenu.vue')['default']
     Draggable: typeof import('./src/components/Draggable.vue')['default']
+    ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElBacktop: typeof import('element-plus/es')['ElBacktop']
     ElBadge: typeof import('element-plus/es')['ElBadge']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
