@@ -3,6 +3,10 @@
 </template>
 
 <script setup lang="ts">
+import { useTasksStore } from '@/store/tasks'
+
+const { tasks } = toRefs(useTasksStore())
+
 const calendarRef = ref<HTMLElement>()
 nextTick(() => {
 	const calendarInstance = new window.calendarJs(
@@ -17,13 +21,34 @@ nextTick(() => {
 					maximumEventsPerDayDisplay: 0
 				}
 			},
-			visibleDays: [0, 1, 2, 3, 4, 5, 6]
+			events: {
+				onEventUpdated: (newEvent: any) => {
+					console.log(newEvent, 'onEventUpdated')
+				}
+			}
 		}
 	)
 	// Search Options allow you to customize how Calendar.js Search dialog will function. You can set them manually as follows:
 	calendarInstance.setSearchOptions({
 		matchCase: false
 	})
+	// add custom events
+	// event json config can look up (https://calendar-js.com/documentation/event.html)
+	const events = tasks.value?.map(event => {
+		const { id, name, createTime, updateTime, expectEndTime, expectStartTime } =
+			event
+		return {
+			id,
+			title: name,
+			from: expectStartTime,
+			to: expectEndTime,
+			description: name,
+			created: createTime,
+			type: 4
+		}
+	})
+	// console.log(tasks.value)
+	calendarInstance.addEvents(events)
 })
 </script>
 
