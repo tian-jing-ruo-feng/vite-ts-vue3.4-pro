@@ -18,43 +18,52 @@
 </template>
 
 <script setup lang="ts">
+import { useUser } from '@/store/user'
+
+const userStore = useUser()
+const { getUserInfo, setUserInfoInLocal } = userStore
+const { user } = storeToRefs(userStore)
+
 type Command = {
 	command: number
 	label: string
 	visible: boolean
 }
 
-const user = reactive({
-	name: '游客',
-	id: ''
-})
+const emit = defineEmits<{
+	command: [command: number]
+}>()
 
 const commands = ref<Command[]>([
 	{
 		label: '登 录',
 		command: 0,
-		visible: !user.id
+		visible: user.value.role === 0
 	},
 	{
 		label: '登 出',
 		command: 1,
-		visible: !!user.id
+		visible: user.value.role !== 0
 	},
 	{
 		label: '注 册',
 		command: 2,
-		visible: !user.id
+		visible: user.value.role === 0
 	},
 	{
 		label: '个人中心',
 		command: 3,
-		visible: !!user.id
+		visible: user.value.role !== 0
 	}
 ])
 
 const handleCommand = (command: Command['command']) => {
-	console.log(command)
+	// console.log(command)
+	emit('command', command)
 }
+onMounted(() => {
+	setUserInfoInLocal(getUserInfo())
+})
 </script>
 
 <style scoped lang="scss">

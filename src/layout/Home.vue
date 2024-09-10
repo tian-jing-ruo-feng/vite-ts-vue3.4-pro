@@ -30,7 +30,7 @@
 								</el-icon>
 							</div>
 						</router-link>
-						<UserLogin class="user"></UserLogin>
+						<UserSetting class="user" @command="handleCommand"></UserSetting>
 					</li>
 				</ul>
 			</el-header>
@@ -51,16 +51,27 @@
 					</div>
 				</el-card>
 			</el-main>
+			<Login
+				v-if="LoginVisible"
+				v-model="LoginVisible"
+				v-model:confirm-text="confirmText"
+				@login="userLogin"
+			></Login>
 		</el-container>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { Moon, Sunny } from '@element-plus/icons-vue'
+import { Action, ElNotification } from 'element-plus'
 import Menu from './Menu.vue'
 import pkg from '../../package.json'
 import { useTheme } from '@/store/theme'
-import UserLogin from './UserLogin.vue'
+import UserSetting from './UserSetting.vue'
+import Login, { User } from './Login.vue'
+import { useUser } from '@/store/user'
+
+const { setUserInfoInLocal } = useUser()
 
 const { name, version, dependencies } = pkg
 const { vue: VueVersion } = dependencies
@@ -71,6 +82,57 @@ provide('mainContent', contentRef)
 const themeStore = useTheme()
 const { theme } = storeToRefs(themeStore)
 const { THEME_LIGHT, THEME_DARK, themeChange } = themeStore
+
+const LoginVisible = ref(false)
+const confirmText = ref('登 录')
+
+const handleCommand = (command: number) => {
+	// 退出
+	if (command === 1) {
+		ElMessageBox.alert('确认登出？', '登出', {
+			confirmButtonText: '确 认',
+			callback: (action: Action) => {
+				// 设置游客身份
+				setUserInfoInLocal({
+					name: '游客',
+					role: 0
+				})
+				ElMessage({
+					type: 'success',
+					message: '登出成功'
+				})
+				// 页面刷新
+				window.location.reload()
+			}
+		})
+	}
+	// 个人中心
+	if (command === 3) {
+		return
+	}
+	// 登录、注册
+	if (command === 0) {
+		confirmText.value = '登 录'
+		LoginVisible.value = true
+	}
+	if (command === 2) {
+		confirmText.value = '注 册'
+		LoginVisible.value = true
+	}
+}
+
+const userLogin = (user: User) => {
+	setUserInfoInLocal({
+		name: user.name,
+		role: 1
+	})
+	// 页面刷新
+	LoginVisible.value = false
+	ElNotification.success('登录成功')
+	setTimeout(() => {
+		window.location.reload()
+	}, 1000)
+}
 </script>
 
 <style lang="scss" scoped>
