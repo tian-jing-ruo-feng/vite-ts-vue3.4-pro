@@ -147,7 +147,15 @@ const handleConfirm = () => {
 	}
 
 	.left-bg {
-		background: no-repeat center/100% url('/login.png');
+		position: relative;
+		// background: no-repeat center/100% url('/login.png');
+		// background-color: rgba($color: #94a4a5, $alpha: 1);
+		background-image: linear-gradient(to right, #94a4a5, #bae3e7),
+			url('/login.png');
+		background-size: 40%, contain; // 40%表达需要渐变的宽度
+		background-repeat: no-repeat;
+		background-position: right; // right表示渐变对齐的方向
+		background-color: #94a4a5;
 	}
 
 	.right-form {
