@@ -1,4 +1,4 @@
-import{M as u,m}from"./index-BgfwsJYH.js";import{f as p,r as v,cA as g,s as x,c as _,a as f,h as i,x as n,z as k,V as h,o as T,_ as w}from"./index-BSBTRlSp.js";const b=`# 基于 Vue3.4 + Vite 的 案例项目
+import{M as u,m}from"./index-D_JrCq1V.js";import{f as p,r as v,cA as g,s as x,c as _,a as f,h as i,x as n,z as k,V as h,o as T,_ as w}from"./index-DlfrkaUd.js";const b=`# 基于 Vue3.4 + Vite 的 案例项目
 
 ## 项目目录
 
