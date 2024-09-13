@@ -1,4 +1,8 @@
 export type Role = 0 | 1
+export const RoleMap = {
+	0: '游客',
+	1: '管理员'
+}
 
 export interface User {
 	name: string

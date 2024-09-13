@@ -85,6 +85,14 @@ export const routes: RouteRecordRaw[] = [
 				meta: {
 					auth: [0, 1]
 				}
+			},
+			{
+				name: '个人中心',
+				path: 'profile',
+				component: () => import('../layout/Profile.vue'),
+				meta: {
+					auth: [1]
+				}
 			}
 		]
 	},

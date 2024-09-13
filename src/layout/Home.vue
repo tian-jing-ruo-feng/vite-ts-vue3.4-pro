@@ -71,6 +71,7 @@ import UserSetting from './UserSetting.vue'
 import Login, { User } from './Login.vue'
 import { useUser } from '@/store/user'
 
+const router = useRouter()
 const { setUserInfoInLocal } = useUser()
 
 const { name, version, dependencies } = pkg
@@ -108,7 +109,7 @@ const handleCommand = (command: number) => {
 	}
 	// 个人中心
 	if (command === 3) {
-		return
+		router.push('/profile')
 	}
 	// 登录、注册
 	if (command === 0) {
