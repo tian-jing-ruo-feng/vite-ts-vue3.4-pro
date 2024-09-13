@@ -139,12 +139,23 @@ const useTaskStatistics = () => {
 		const series: any[] = []
 
 		taskGroups.value.forEach(type => {
-			series.push({
-				name: type.name,
-				type: 'bar',
-				stack: 'one',
-				data: []
-			})
+			if (type.id !== 'all') {
+				series.push({
+					name: type.name,
+					type: 'bar',
+					stack: 'one',
+					data: []
+				})
+			} else {
+				series.push({
+					name: type.name,
+					type: 'line',
+					itemStyle: {
+						color: '#fc8452'
+					},
+					data: []
+				})
+			}
 		})
 
 		// 展示数据
