@@ -4,9 +4,7 @@
 			<!-- TODO LIST -->
 			待办事项清单
 			<el-text tag="sub" size="small">
-				<el-button type="text" @click="isChart = !isChart">{{
-					areaLabel
-				}}</el-button>
+				<el-button link @click="isChart = !isChart">{{ areaLabel }}</el-button>
 			</el-text>
 		</h2>
 		<div v-if="isChart" class="tasks-charts">
