@@ -1,0 +1,1 @@
+import{_ as o,c as a,K as s,a as t,o as c}from"./index-DM-QqcYL.js";const n={},r={class:"es6"};function _(d,e){return c(),a("div",r,e[0]||(e[0]=[s(" ES6 "),t("div",null,[s("tCO"),t("sub",null,"2")],-1)]))}const f=o(n,[["render",_],["__scopeId","data-v-e3f80212"]]);export{f as default};

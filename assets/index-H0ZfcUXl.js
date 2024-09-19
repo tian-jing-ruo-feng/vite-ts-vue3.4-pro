@@ -1,4 +1,4 @@
-import{M as u,m}from"./index-BVtKwl1p.js";import{f as p,r as v,cA as g,s as x,c as _,a as f,h as i,x as n,z as k,V as h,o as T,_ as w}from"./index-DOd3odO0.js";const b=`# 基于 Vue3.4 + Vite 的 案例项目
+import{M as u,m}from"./index-BtKasFJb.js";import{e as p,r as v,cA as g,s as x,c as _,a as f,f as i,v as n,y as k,U as T,o as h,_ as w}from"./index-DM-QqcYL.js";const b=`# 基于 Vue3.4 + Vite 的 案例项目
 
 ## 项目目录
 
@@ -124,4 +124,4 @@ vite-ts-vue3.4-pro
   - [x] 添加标签多选功能
 - [ ] 定时保存至本地文件
 - [ ] 任务列表不同设备同步
-`,D={id:"readme-catalog",class:"readme-doc"},I={class:"readme-catalog"},l="custom-preview-markdown",M=p({__name:"index",setup(O){const e=v();e.value=b.replaceAll("./public",".");const c=g(),{theme:a}=x(c),r=document.querySelector(".el-scrollbar .el-scrollbar__wrap"),d=(s,t)=>{s.preventDefault(),s.stopPropagation(),h(()=>{const o=document.getElementById(`${t.text}`);o&&r.scrollTo({top:o.offsetTop,behavior:"smooth"})})};return(s,t)=>(T(),_("div",D,[f("div",I,[i(n(u),{"editor-id":l,theme:n(a),"scroll-element":n(r),"is-scroll-element-in-shadow":!1,onClick:d},null,8,["theme","scroll-element"])]),i(n(m),{modelValue:n(e),"onUpdate:modelValue":t[0]||(t[0]=o=>k(e)?e.value=o:null),class:"markdown-preview","preview-theme":"dark-light-theme","editor-id":l,theme:n(a)},null,8,["modelValue","theme"])]))}}),y=w(M,[["__scopeId","data-v-849d9694"]]);export{y as default};
+`,D={id:"readme-catalog",class:"readme-doc"},I={class:"readme-catalog"},l="custom-preview-markdown",M=p({__name:"index",setup(O){const e=v();e.value=b.replaceAll("./public",".");const c=g(),{theme:a}=x(c),r=document.querySelector(".el-scrollbar .el-scrollbar__wrap"),d=(s,t)=>{s.preventDefault(),s.stopPropagation(),T(()=>{const o=document.getElementById(`${t.text}`);o&&r.scrollTo({top:o.offsetTop,behavior:"smooth"})})};return(s,t)=>(h(),_("div",D,[f("div",I,[i(n(u),{"editor-id":l,theme:n(a),"scroll-element":n(r),"is-scroll-element-in-shadow":!1,onClick:d},null,8,["theme","scroll-element"])]),i(n(m),{modelValue:n(e),"onUpdate:modelValue":t[0]||(t[0]=o=>k(e)?e.value=o:null),class:"markdown-preview","preview-theme":"dark-light-theme","editor-id":l,theme:n(a)},null,8,["modelValue","theme"])]))}}),V=w(M,[["__scopeId","data-v-849d9694"]]);export{V as default};
