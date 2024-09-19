@@ -5,14 +5,13 @@
 <script setup lang="ts">
 import {
 	getHolidaysInRange,
-	getLunarDate,
 	getDayDetail,
 	getLunarDatesInRange,
-	getSolarTermsInRange,
 	getSolarTerms
 } from 'chinese-days'
 import dayjs from 'dayjs'
 import { useTasksStore } from '@/store/tasks'
+import { useTaskGroupStore, Tag } from '@/store/taskGroup'
 // * use scss :export {} variables, the scss files must end with 'module.scss'
 import stateStyles from '@/style/state.module.scss'
 
@@ -61,6 +60,7 @@ interface LunarDateDetail {
 	lunarDayCN: string
 }
 const { tasks } = toRefs(useTasksStore())
+const { tags } = toRefs(useTaskGroupStore())
 
 const calendarRef = ref<HTMLElement>()
 
@@ -72,18 +72,23 @@ nextTick(() => {
 			// eslint-disable-next-line no-underscore-dangle
 			...window.__TRANSLATION_OPTIONS,
 			dayHeaderNames: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+			sideMenuHeaderText: '日程',
+			groupText: '分组：',
+			groupsText: '分组',
+			optionalText: '选项',
 			showHolidays: true,
 			allowHtmlInDisplay: true,
+			sideMenu: {
+				showGroups: true
+			},
 			views: {
 				fullMonth: {
-					maximumEventsPerDayDisplay: 0,
-					showDayNamesHeaders: false
+					maximumEventsPerDayDisplay: 0
+					// showDayNamesHeaders: false
 				}
 			},
 			events: {
-				onEventUpdated(newEvent: any) {
-					console.log(newEvent, 'onEventUpdated')
-				},
+				onEventUpdated(newEvent: any) {},
 				onSetDate(date: Date) {
 					resetHolidays(date, null, calendarInstance)
 				},
@@ -165,10 +170,15 @@ nextTick(() => {
 			updateTime,
 			expectEndTime,
 			expectStartTime,
+			groupTag,
 			state
 		} = event
 		const eventState = (_state: string) =>
 			_state.slice(0, 1).toUpperCase() + _state.slice(1)
+		// get task group name
+		const getGroupName = (groupTag: Tag['id']) => {
+			return tags.value.find(tag => tag.id === groupTag)!.name
+		}
 		return {
 			id,
 			title: name,
@@ -177,9 +187,24 @@ nextTick(() => {
 			description: name,
 			created: createTime,
 			type: 4,
-			color: stateStyles[`state${eventState(state!)}`]
+			color: stateStyles[`state${eventState(state!)}`],
+			group: getGroupName(groupTag!)
 		}
 	})
+
+	const addCustomTypes = () => {
+		const customTypeIndex = 999
+		tags
+			.value!.map((item: Tag, ind: number) => ({
+				id: customTypeIndex + ind,
+				text: item.name
+			}))
+			.forEach((item: { id: number; text: string }) =>
+				calendarInstance.addEventType(item.id, item.text)
+			)
+	}
+	addCustomTypes()
+
 	calendarInstance
 		.addEvents(events)
 		.addHolidays(getLunarDaysByYear(curDisplayYear, null))
