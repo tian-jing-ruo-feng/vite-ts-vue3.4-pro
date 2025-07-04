@@ -6,6 +6,7 @@ import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
+import UnoCSS from 'unocss/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { plugin as mdPlugin, PluginOptions, Mode } from 'vite-plugin-markdown'
 
@@ -17,6 +18,7 @@ export default defineConfig({
 	},
 	plugins: [
 		vue(),
+		UnoCSS(),
 
 		AutoImport({
 			// Auto import [vue, vue-router, pinia] functions related

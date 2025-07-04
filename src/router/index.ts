@@ -1,12 +1,12 @@
 import {
 	createRouter,
-	createWebHistory,
 	createWebHashHistory,
 	type RouteRecordRaw
 } from 'vue-router'
 import { name } from '../../package.json'
 
 import Home from '../layout/Home.vue'
+import Main from '../layout/Main.vue'
 
 /**
  * meta: { auth: number }
@@ -18,7 +18,8 @@ export const routes: RouteRecordRaw[] = [
 	{
 		name: 'Home',
 		path: '/',
-		component: Home,
+		// component: Home,
+		component: Main,
 		children: [
 			{
 				name: '待办',
