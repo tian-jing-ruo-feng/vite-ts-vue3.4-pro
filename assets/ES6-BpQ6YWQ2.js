@@ -1,0 +1,1 @@
+import{_ as o,c as a,o as c,K as s,a as t}from"./index-BhiF1SC6.js";const n={},r={class:"es6"};function _(d,e){return c(),a("div",r,e[0]||(e[0]=[s(" ES6 ",-1),t("div",null,[s("tCO"),t("sub",null,"2")],-1)]))}const f=o(n,[["render",_],["__scopeId","data-v-e3f80212"]]);export{f as default};
