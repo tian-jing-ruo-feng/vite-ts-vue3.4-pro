@@ -1,62 +1,61 @@
 <template>
-	<div class="todo">
-		<h2 class="title">
-			<!-- TODO LIST -->
-			待办事项清单
-			<el-text tag="sub" size="small">
-				<el-button link @click="isChart = !isChart">{{ areaLabel }}</el-button>
-			</el-text>
-		</h2>
-		<div v-if="isChart" class="tasks-charts">
-			<el-divider>任务统计</el-divider>
-			<TaskStatistics></TaskStatistics>
-		</div>
-		<div v-else class="todo-content">
-			<task-group @select="handleTagSelected"></task-group>
-			<div v-if="false" class="add-area">
-				<el-form
-					ref="formRef"
-					:inline="true"
-					:model="form"
-					:rules="rules"
-					hide-required-asterisk
-					class="demo-form-inline"
-					@submit.prevent
-				>
-					<el-form-item label="添加任务：" prop="task">
-						<el-input
-							ref="inputTask"
-							v-model.trim="form.task"
-							type="textarea"
-							class="input-task"
-							clearable
-							@keyup.enter="addTask"
-						></el-input>
-						<el-button class="add-button" @click="addTask">
-							<el-icon color="green"><ep-plus></ep-plus></el-icon>
+	<div class="todo-container">
+		<el-card shadow="hover" class="todo-header">
+			<div class="header-content">
+				<el-icon class="title-icon"><ep-notebook /></el-icon>
+				<h2 class="title">
+					待办事项清单
+					<el-tooltip :content="areaLabel" placement="top">
+						<el-button
+							circle
+							plain
+							class="toggle-button"
+							@click="isChart = !isChart"
+						>
+							<el-icon>
+								<ep-data-analysis v-if="isChart" />
+								<ep-tickets v-else />
+							</el-icon>
 						</el-button>
-					</el-form-item>
-				</el-form>
+					</el-tooltip>
+				</h2>
 			</div>
-			<Editor
-				class="task-editor"
-				:height="'150px'"
-				:edit-content="editContent"
-				@cancel="handleEditorCancel"
-				@confirm="handleEditorConfirm"
-			></Editor>
-			<el-divider> 任务列表 </el-divider>
-			<SearchForm v-if="tasks?.length" @search="handleSearchTasks"></SearchForm>
-			<el-scrollbar :height="height">
-				<Tasks
-					:tasks="tasksUnderTag!"
-					@edit="editTask"
-					@remove="removeTask"
-					@update="updateTask"
-					@to-top="topTask"
-				></Tasks>
-			</el-scrollbar>
-		</div>
+		</el-card>
+
+		<transition name="fade" mode="out-in">
+			<el-card v-if="isChart" shadow="hover" class="todo-content">
+				<el-divider
+					><el-icon><ep-pie-chart /></el-icon> 任务统计</el-divider
+				>
+				<TaskStatistics />
+			</el-card>
+		</transition>
+
+		<transition name="fade" mode="out-in">
+			<el-card v-if="!isChart" shadow="hover" class="todo-content">
+				<task-group @select="handleTagSelected" />
+				<el-divider
+					><el-icon><ep-list /></el-icon> 任务列表</el-divider
+				>
+				<Editor
+					class="task-editor"
+					:height="'150px'"
+					:edit-content="editContent"
+					@cancel="handleEditorCancel"
+					@confirm="handleEditorConfirm"
+				/>
+				<SearchForm v-if="tasks?.length" @search="handleSearchTasks" />
+				<el-scrollbar :height="height">
+					<Tasks
+						:tasks="tasksUnderTag!"
+						@edit="editTask"
+						@remove="removeTask"
+						@update="updateTask"
+						@to-top="topTask"
+					/>
+				</el-scrollbar>
+			</el-card>
+		</transition>
 	</div>
 </template>
 
@@ -301,31 +300,72 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.todo {
-	display: flex;
-	flex-direction: column;
-	width: 75%;
+.todo-container {
+	width: 80%;
+	max-width: 1200px;
 	margin: 0 auto;
-	.title {
-		font-size: 28px;
-		font-weight: bold;
-		text-align: center;
-		padding: 25px;
+	padding: 20px 0;
+
+	.todo-header {
+		margin-bottom: 20px;
+		border-radius: 8px;
+
+		.header-content {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 15px;
+
+			.title-icon {
+				font-size: 32px;
+				color: var(--el-color-primary);
+			}
+
+			.title {
+				display: flex;
+				align-items: center;
+				gap: 15px;
+				font-size: 24px;
+				font-weight: 500;
+				margin: 0;
+
+				.toggle-button {
+					transition: all 0.3s ease;
+					&:hover {
+						transform: scale(1.1);
+					}
+				}
+			}
+		}
 	}
 
 	.todo-content {
-		.add-area {
-			.input-task,
-			.add-button {
-				display: inline-block;
-			}
-			.input-task {
-				width: auto;
-			}
-		}
+		border-radius: 8px;
+		margin-bottom: 20px;
+		transition: all 0.3s ease;
+
 		.task-editor {
-			margin-bottom: 50px;
+			margin: 20px 0;
+		}
+
+		.el-divider {
+			margin: 25px 0;
+
+			.el-icon {
+				margin-right: 8px;
+				color: var(--el-color-primary);
+			}
 		}
 	}
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>
